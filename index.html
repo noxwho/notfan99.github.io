@@ -5,112 +5,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Дни">
+<meta name="theme-color" content="#000000">
 <title>Дни</title>
 
 <style>
 /* ==========================================================================
-   1. БАЗОВЫЕ ПЕРЕМЕННЫЕ И ЦВЕТА
+   1. БАЗОВЫЕ ПЕРЕМЕННЫЕ И ЦВЕТА (iOS Style)
    ========================================================================== */
 :root {
-  --bg: #fff;
-  --fg: #111;
-  --mut: #8a8a8e;
-  --line: #e8e8ea;
-  --sf: #f3f3f5;
-  --acc: var(--fg);
-  --glass: rgba(255, 255, 255, 0.65);
+  /* Светлая тема */
+  --bg: #f2f2f7;
+  --card-bg: #ffffff;
+  --fg: #000000;
+  --mut: #8e8e93;
+  --line: rgba(60, 60, 67, 0.12);
+  --sf: #e5e5ea;
+  --acc: #007aff;
+  --red: #ff3b30;
+  --glass: rgba(255, 255, 255, 0.75);
   --glass-line: rgba(0, 0, 0, 0.05);
   
   color-scheme: light;
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
-  transition: background 0.3s ease;
+  background-color: var(--bg);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Темная тема (системная или принудительная) */
+/* Темная тема */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #000;
-    --fg: #f2f2f2;
+    --bg: #000000;
+    --card-bg: #1c1c1e;
+    --fg: #ffffff;
     --mut: #8e8e93;
-    --line: #2a2a2c;
-    --sf: #1c1c1e;
-    --acc: var(--fg);
-    --glass: rgba(0, 0, 0, 0.6);
+    --line: rgba(84, 84, 88, 0.65);
+    --sf: #2c2c2e;
+    --acc: #0a84ff;
+    --red: #ff453a;
+    --glass: rgba(28, 28, 30, 0.75);
     --glass-line: rgba(255, 255, 255, 0.1);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #000;
-  --fg: #f2f2f2;
+  --bg: #000000;
+  --card-bg: #1c1c1e;
+  --fg: #ffffff;
   --mut: #8e8e93;
-  --line: #2a2a2c;
-  --sf: #1c1c1e;
-  --acc: var(--fg);
-  --glass: rgba(0, 0, 0, 0.6);
+  --line: rgba(84, 84, 88, 0.65);
+  --sf: #2c2c2e;
+  --acc: #0a84ff;
+  --red: #ff453a;
+  --glass: rgba(28, 28, 30, 0.75);
   --glass-line: rgba(255, 255, 255, 0.1);
   color-scheme: dark;
 }
 
 /* ==========================================================================
-   2. ФОНЫ ПРИЛОЖЕНИЯ (Градиенты)
-   ========================================================================== */
-:root[data-bg="sunset"] { background-image: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
-:root[data-bg="ocean"]  { background-image: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
-:root[data-bg="night"]  { background-image: linear-gradient(135deg, #141e30 0%, #243b55 100%); }
-
-/* ==========================================================================
-   3. ЭФФЕКТ СТЕКЛА (Glassmorphism)
-   ========================================================================== */
-:root[data-glass="1"] main,
-:root[data-glass="1"] header,
-:root[data-glass="1"] #dr {
-  background: var(--glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-:root[data-glass="1"] .st div,
-:root[data-glass="1"] .seg,
-:root[data-glass="1"] input,
-:root[data-glass="1"] .nt,
-:root[data-glass="1"] .mood-compact,
-:root[data-glass="1"] .fin-stat-btn,
-:root[data-glass="1"] .gym-stat-btn {
-  background: var(--glass-line);
-}
-:root[data-glass="1"] #sh {
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-:root[data-glass="1"] .donut::after {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-}
-
-/* ==========================================================================
-   4. ГЛОБАЛЬНЫЕ СБРОСЫ И БАЗОВАЯ ТИПОГРАФИКА
+   2. ГЛОБАЛЬНЫЕ СБРОСЫ
    ========================================================================== */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  /* Отключаем выделение текста для iOS-ощущения */
+  -webkit-user-select: none;
+  user-select: none;
 }
 html, body {
   margin: 0;
   padding: 0;
-  min-height: 100dvh; /* Покрывает 100% экрана, включая зону под часами */
+  min-height: 100dvh;
   scroll-padding-top: env(safe-area-inset-top, 0px);
 }
 body {
   display: flex;
   flex-direction: column;
-  background: transparent;
+  background: var(--bg);
   color: var(--fg);
-  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", Arial, sans-serif;
+  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  overflow-x: hidden;
 }
 button, input, textarea {
   font: inherit;
@@ -122,10 +96,14 @@ button {
   padding: 0;
   cursor: pointer;
 }
+input, textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
 main {
   flex: 1;
   overflow-y: auto;
-  padding: 18px 18px 28px;
+  padding: 18px 18px 100px; /* Отступ снизу для плавающих кнопок */
   max-width: 560px;
   width: 100%;
   margin: 0 auto;
@@ -133,40 +111,53 @@ main {
 }
 
 /* ==========================================================================
-   5. ШАПКА И БОКОВОЕ МЕНЮ
+   3. ШАПКА И МЕНЮ (Glassmorphism)
    ========================================================================== */
 header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
+  gap: 10px;
+  padding: 8px 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--line);
-  transition: background 0.3s;
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 50;
 }
-#ht { font-size: 17px; font-weight: 600; }
-
-/* Иконка меню (Гамбургер) */
-#mb { width: 44px; height: 44px; position: relative; z-index: 30; }
+#ht {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+#mb {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  border-radius: 50%;
+  background: var(--glass-line);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 #mb i {
   position: absolute;
   left: 11px;
-  width: 22px;
+  width: 18px;
   height: 2px;
   border-radius: 2px;
   background: var(--fg);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
 }
-#mb i:nth-child(1) { top: 15px; }
-#mb i:nth-child(2) { top: 21px; }
-#mb i:nth-child(3) { top: 27px; }
-body.mo #mb i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+#mb i:nth-child(1) { top: 14px; }
+#mb i:nth-child(2) { top: 19px; }
+#mb i:nth-child(3) { top: 24px; }
+body.mo #mb i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
 body.mo #mb i:nth-child(2) { opacity: 0; }
-body.mo #mb i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+body.mo #mb i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
-/* Оверлей (затемнение) */
+/* Затемнение фона (слабое для iOS) */
 #sc {
   position: fixed;
   inset: 0;
@@ -176,182 +167,503 @@ body.mo #mb i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
   transition: opacity 0.3s ease;
   z-index: 10;
 }
-body.mo #sc { opacity: 0.25; pointer-events: auto; } /* Слабое затемнение для эффекта стекла */
+body.mo #sc { opacity: 0.2; pointer-events: auto; }
 
-/* Само выезжающее меню */
+/* Боковое меню */
 #dr {
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   width: 80%;
-  max-width: 300px;
-  background: var(--bg);
+  max-width: 320px;
+  background: var(--glass);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border-right: 1px solid var(--line);
   z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: calc(env(safe-area-inset-top, 0px) + 64px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px);
+  padding: calc(env(safe-area-inset-top, 0px) + 70px) 16px calc(env(safe-area-inset-bottom, 0px) + 20px);
   transform: translateX(-100%);
   visibility: hidden;
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.35s, background 0.3s;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.4s;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.1);
 }
 body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 
-.mi { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 12px; border-radius: 12px; font-size: 17px; text-align: left; }
-.mi.on { background: var(--sf); font-weight: 600; }
+.mi {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 500;
+  text-align: left;
+  transition: background 0.2s;
+  margin-bottom: 4px;
+}
+.mi:active, .mi.on {
+  background: var(--glass-line);
+}
+.mi.on { font-weight: 600; color: var(--acc); }
 .sp { flex: 1; }
-main .mi { border-radius: 0; padding: 14px 0; border-bottom: 1px solid var(--line); }
-.bk { color: var(--acc); padding: 4px 0 8px; font-size: 17px; }
 
 /* ==========================================================================
-   6. КАЛЕНДАРЬ
+   4. ЭЛЕМЕНТЫ КАЛЕНДАРЯ
    ========================================================================== */
-.mh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.mh b { font-size: 22px; font-weight: 650; }
-.mh .nav-group { display: flex; align-items: center; gap: 6px; }
-.mh .nav-group button { font-size: 26px; width: 36px; height: 36px; color: var(--mut); display: flex; justify-content: center; align-items: center; }
+.mh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+.mh b {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.mh .nav-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mh .nav-group button {
+  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  color: var(--acc);
+  background: var(--glass-line);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.gd { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
-.dw { font-size: 12px; color: var(--mut); padding: 6px 0; }
-.c { height: 44px; position: relative; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-
-/* Точки-индикаторы */
-.c u { display: none; position: absolute; bottom: 6px; width: 4px; height: 4px; border-radius: 50%; background: var(--acc); }
+.gd {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  background: var(--card-bg);
+  padding: 12px 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+.dw {
+  font-size: 12px;
+  color: var(--mut);
+  padding: 6px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.c {
+  height: 46px;
+  position: relative;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.c u {
+  display: none;
+  position: absolute;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--acc);
+}
 .c u.dot { display: block; }
-.c u.fin-dot { background: #d6334a; width: 5px; height: 5px; bottom: 5px; }
+.c u.fin-dot { background: var(--red); }
 
-/* Состояния дней */
 .c.t { color: var(--acc); font-weight: 700; }
-.c.s { background: var(--fg); color: var(--bg); }
+.c.s {
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
 .c.s u { background: var(--bg); }
-.c.s u.fin-dot { background: #ff6b81; }
-.c.gy { background: var(--acc); color: var(--bg); font-weight: 600; }
+.c.gy { background: var(--acc); color: #fff; font-weight: 600; }
 .c.gn { background: var(--sf); color: var(--mut); text-decoration: line-through; }
-.c.dl-day { border: 2px solid #d6334a; color: #d6334a; font-weight: bold; }
+.c.dl-day { border: 2px solid var(--red); color: var(--red); font-weight: bold; }
 
-/* Список дел на день */
-.dh { display: flex; align-items: baseline; gap: 10px; margin: 22px 0 6px; }
-.dh b { font-size: 20px; }
-.dh span { color: var(--mut); }
-.em { color: var(--mut); }
-.r { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-.tx { flex: 1; text-align: left; font-size: 17px; }
-.tx small { display: block; color: var(--mut); font-size: 13px; }
+/* Список дел */
+.dh {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 24px 4px 12px;
+}
+.dh b { font-size: 22px; font-weight: 700; }
+.dh span { color: var(--mut); font-weight: 500; }
+.em { color: var(--mut); font-size: 15px; padding: 0 4px; }
+
+.r {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  transition: transform 0.2s, background 0.2s;
+  /* Для свайпов */
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.r-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.r.swiped .r-inner { transform: translateX(-80px); }
+.r-del-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: var(--red);
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 16px 16px 0;
+  transform: translateX(80px);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.r.swiped .r-del-btn { transform: translateX(0); }
+
+.tx { flex: 1; text-align: left; font-size: 17px; font-weight: 500; }
+.tx small { display: block; color: var(--mut); font-size: 13px; font-weight: 400; margin-top: 2px; }
 .tx.dn { color: var(--mut); text-decoration: line-through; }
-.tx.deadline { color: #d6334a; font-weight: 600; }
-.add { display: block; width: 100%; text-align: left; padding: 16px 0; color: var(--acc); font-weight: 600; }
+.tx.deadline { color: var(--red); font-weight: 600; }
+
+.add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  color: var(--acc);
+  font-weight: 600;
+  font-size: 17px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  margin-top: 12px;
+}
+.add:active { background: var(--sf); }
 
 /* ==========================================================================
-   7. ЗАМЕТКИ
+   5. ЗАМЕТКИ
    ========================================================================== */
-.nt { display: block; width: 100%; text-align: left; padding: 14px 0; border-bottom: 1px solid var(--line); }
-.nt b { display: block; }
-.nt small { display: block; color: var(--mut); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  position: relative;
+  overflow: hidden;
+}
+.nt b { display: block; font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.nt small { display: block; color: var(--mut); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; }
 
 /* ==========================================================================
-   8. СТАТИСТИКА И ФИНАНСЫ
+   6. ФИНАНСЫ И СТАТИСТИКА
    ========================================================================== */
 .st { display: flex; gap: 10px; margin: 6px 0 16px; }
-.st div { flex: 1; background: var(--sf); border-radius: 14px; padding: 12px; transition: background 0.3s; }
-.st b { display: block; font-size: 24px; }
-.st span { font-size: 12px; color: var(--mut); }
-
-.fin-total { font-size: 26px; font-weight: 700; margin: 0 0 16px; }
-.fin-total span { font-size: 14px; color: var(--mut); font-weight: 400; }
-.cat-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
-.fin-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
-.fin-item .desc { display: flex; align-items: center; font-weight: 500; }
-.fin-item .sum { font-weight: 600; }
-
-/* Кнопки вызова статистики (аккуратные, без эмодзи) */
-.fin-stat-btn, .gym-stat-btn {
-  display: block; width: 100%; text-align: center; padding: 12px; margin-top: 16px;
-  color: var(--mut); font-weight: 500; font-size: 14px; border-radius: 12px;
-  background: var(--sf); transition: background 0.2s, color 0.2s;
+.st div {
+  flex: 1;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  text-align: center;
 }
-.fin-stat-btn:active, .gym-stat-btn:active { background: var(--line); color: var(--fg); }
+.st b { display: block; font-size: 24px; font-weight: 700; }
+.st span { font-size: 12px; color: var(--mut); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.fin-total {
+  font-size: 34px;
+  font-weight: 800;
+  margin: 0 0 20px;
+  letter-spacing: -1px;
+  padding: 0 4px;
+}
+.fin-total span { font-size: 15px; color: var(--mut); font-weight: 500; letter-spacing: 0; margin-left: 8px; }
+
+.cat-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+.fin-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  position: relative;
+  overflow: hidden;
+}
+.fin-item .desc { display: flex; align-items: center; font-weight: 500; font-size: 16px; }
+.fin-item .sum { font-weight: 600; font-size: 16px; }
+
+/* Кнопки статистики */
+.fin-stat-btn, .gym-stat-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  margin-top: 16px;
+  color: var(--acc);
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  transition: background 0.2s;
+}
+.fin-stat-btn:active, .gym-stat-btn:active { background: var(--sf); }
 
 /* ==========================================================================
-   9. ГРАФИКИ (Пончик и Столбцы)
+   7. ГРАФИКИ (Пончик и Столбцы) - Без анимации
    ========================================================================== */
 .chart-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
 .donut {
-  width: 180px; height: 180px; border-radius: 50%; position: relative;
-  display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
-  transition: background 1s linear; /* Плавная анимация зарисовки */
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  /* Убрана анимация background */
 }
 .donut::after {
-  content: ''; position: absolute; width: 110px; height: 110px;
-  background: var(--bg); border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  transition: background 0.3s;
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: var(--card-bg);
+  border-radius: 50%;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
 }
 .donut-inner { position: relative; z-index: 2; text-align: center; }
-.donut-inner b { font-size: 24px; display: block; }
-.donut-inner span { font-size: 12px; color: var(--mut); }
+.donut-inner b { font-size: 28px; display: block; font-weight: 800; letter-spacing: -0.5px; }
+.donut-inner span { font-size: 13px; color: var(--mut); font-weight: 500; text-transform: uppercase; }
 
-.legend { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-.legend-item { display: flex; justify-content: space-between; font-size: 15px; }
+.legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.legend-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  background: var(--card-bg);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 500;
+}
 
 .bar-chart {
-  display: flex; justify-content: space-around; align-items: flex-end;
-  height: 200px; width: 100%; margin-top: 20px; padding-bottom: 10px;
-  border-bottom: 2px solid var(--line);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 180px;
+  width: 100%;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
 }
 .bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 8px; height: 100%; justify-content: flex-end; }
 .bar {
-  width: 30px; background: var(--acc); border-radius: 6px 6px 0 0;
-  transform-origin: bottom; animation: growBar 0.6s cubic-bezier(.2,.8,.2,1) forwards;
+  width: 32px;
+  background: var(--acc);
+  border-radius: 8px 8px 0 0;
+  /* Убрана анимация growBar */
 }
-.bar-wrap span { font-size: 12px; color: var(--mut); }
-@keyframes growBar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.bar-wrap span { font-size: 12px; color: var(--mut); font-weight: 600; }
 
 /* ==========================================================================
-   10. НАСТРОЙКИ И МОДАЛЬНЫЕ ОКНА
+   8. НАСТРОЙКИ И МОДАЛЬНЫЕ ОКНА (Шторки)
    ========================================================================== */
-.sl { color: var(--mut); font-size: 13px; margin: 22px 0 8px; }
-.seg { display: flex; background: var(--sf); border-radius: 12px; padding: 3px; transition: background 0.3s; }
-.seg button { flex: 1; padding: 9px 4px; border-radius: 10px; font-size: 14px; }
-.seg .on { background: var(--bg); box-shadow: 0 0 0 1px var(--line); font-weight: 600; }
-.rs { margin-top: 32px; padding: 10px 0; color: #d6334a; }
-.dl { color: #d6334a; padding: 10px; text-align: center; }
-.cl { color: var(--mut); padding: 10px; text-align: center; }
+.sl { color: var(--mut); font-size: 13px; margin: 24px 0 8px 4px; font-weight: 500; text-transform: uppercase; }
+.seg {
+  display: flex;
+  background: var(--sf);
+  border-radius: 12px;
+  padding: 3px;
+  margin-bottom: 16px;
+}
+.seg button {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.seg .on {
+  background: var(--card-bg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-weight: 600;
+}
+.rs { margin-top: 32px; padding: 16px; color: var(--red); font-weight: 600; text-align: center; border-radius: 16px; background: var(--card-bg); }
+.dl { color: var(--red); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
+.cl { color: var(--acc); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
 
-/* Шторка (нижнее модальное окно) */
+/* Шторка */
 #ov {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-  display: flex; align-items: flex-end; opacity: 0; visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0s linear 0.3s; z-index: 100;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+  z-index: 100;
 }
 #ov.o { opacity: 1; visibility: visible; transition-delay: 0s; }
-#ov #sh { transform: translateY(100%); transition: transform 0.35s cubic-bezier(.2,.8,.2,1); }
+#ov #sh { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
 #ov.o #sh { transform: none; }
 #sh {
-  width: 100%; max-width: 560px; margin: 0 auto; background: var(--bg);
-  border-radius: 20px 20px 0 0; padding: 20px 18px calc(20px + env(safe-area-inset-bottom, 0px));
-  display: flex; flex-direction: column; gap: 12px; max-height: 92%; overflow: auto;
-  transition: background 0.3s;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 92%;
+  overflow: auto;
 }
 #sh.full { height: 92%; }
 
-input { width: 100%; border: 1px solid var(--line); background: var(--sf); border-radius: 12px; padding: 12px; font-size: 17px; transition: background 0.3s; }
-textarea { flex: 1; min-height: 40vh; width: 100%; border: 0; background: none; font-size: 17px; resize: none; outline: none; }
-.pr { background: var(--acc); color: var(--bg); border-radius: 12px; padding: 14px; font-weight: 600; text-align: center; }
+/* Инпуты */
+input[type="text"], input[type="number"], input[type="time"], textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 17px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus { border-color: var(--acc); }
+textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17px; resize: none; padding: 0; }
+
+.pr {
+  background: var(--acc);
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
 .row2 { display: flex; gap: 10px; }
 .row2 .pr { flex: 1; }
 
-/* Трекер настроения */
-.mood-compact { display: flex; justify-content: space-between; align-items: center; background: var(--sf); border-radius: 12px; padding: 4px; margin-top: 20px; margin-bottom: 10px; transition: background 0.3s; }
-.mood-compact span { font-size: 13px; color: var(--mut); padding-left: 8px; font-weight: 500; }
-.mood-compact .moods { display: flex; gap: 2px; }
-.mood-btn { font-size: 20px; padding: 6px 8px; border-radius: 8px; transition: background 0.2s, transform 0.1s; opacity: 0.4; }
+/* Настроение */
+.mood-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 8px 12px;
+  margin-top: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+.mood-compact span { font-size: 14px; color: var(--mut); font-weight: 500; }
+.mood-compact .moods { display: flex; gap: 4px; }
+.mood-btn {
+  font-size: 24px;
+  padding: 8px;
+  border-radius: 12px;
+  transition: background 0.2s, transform 0.1s;
+  opacity: 0.3;
+  filter: grayscale(1);
+}
 .mood-btn:active { transform: scale(0.9); }
-.mood-btn.active { background: var(--bg); opacity: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.mood-btn.active { background: var(--sf); opacity: 1; filter: grayscale(0); transform: scale(1.1); }
 
-/* Плашка дедлайна */
-.deadline-alert { background: #ffebeb; color: #d6334a; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 16px; border: 1px solid #ffcdcd; }
-:root[data-theme="dark"] .deadline-alert { background: rgba(214, 51, 74, 0.2); border-color: rgba(214, 51, 74, 0.4); }
+/* Дедлайн */
+.deadline-alert {
+  background: rgba(255, 59, 48, 0.1);
+  color: var(--red);
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Плавающая кнопка + */
+.fab {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background: var(--acc);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+  z-index: 90;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.fab:active { transform: scale(0.9); }
+.fab svg { width: 28px; height: 28px; }
+
+/* Цифровая клавиатура (Numpad) */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+.numpad button {
+  background: var(--card-bg);
+  padding: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: background 0.1s;
+}
+.numpad button:active { background: var(--sf); }
+.numpad .num-fn { color: var(--acc); font-size: 20px; }
 </style>
 </head>
 <body>
@@ -373,7 +685,10 @@ textarea { flex: 1; min-height: 40vh; width: 100%; border: 0; background: none; 
   <button class="mi" data-t="gym">Посещаемость</button>
   <button class="mi" data-t="fin">Расходы</button>
   <span class="sp"></span>
-  <button class="mi" data-t="set"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-width="3" stroke-dasharray="3.5 3.5"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2"/></svg>Настройки</button>
+  <button class="mi" data-t="set">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-width="3" stroke-dasharray="3.5 3.5"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2"/></svg>
+    Настройки
+  </button>
 </aside>
 
 <!-- Модальное окно -->
@@ -381,48 +696,27 @@ textarea { flex: 1; min-height: 40vh; width: 100%; border: 0; background: none; 
 
 <script>
 /* ==========================================================================
-   1. ИНИЦИАЛИЗАЦИЯ ДАННЫХ И ХРАНИЛИЩА
+   1. ИНИЦИАЛИЗАЦИЯ И БАЗА ДАННЫХ
    ========================================================================== */
 const $ = s => document.querySelector(s);
 
-// Базовая структура данных
 let S = {
-  ev: [],       // События календаря
-  done: {},     // Выполненные задачи
-  notes: [],    // Заметки
-  gym: {},      // Посещаемость
-  moods: {},    // Настроения по дням
-  fin: [],      // Финансовые расходы
-  cats: [       // Базовые категории расходов
-    { id: 'c1', name: 'Еда', color: '#e5484d' },
-    { id: 'c2', name: 'Транспорт', color: '#3e63dd' }
+  ev: [], done: {}, notes: [], gym: {}, moods: {}, fin: [],
+  cats: [
+    { id: 'c1', name: 'Еда', color: '#ff9f0a' },      // Пастельные цвета iOS
+    { id: 'c2', name: 'Транспорт', color: '#0a84ff' },
+    { id: 'c3', name: 'Учеба', color: '#30d158' }
   ]
 };
 
-// Загрузка данных из LocalStorage
-try {
-  Object.assign(S, JSON.parse(localStorage.getItem('dni') || '{}'));
-} catch (e) {
-  console.log('Ошибка загрузки данных:', e);
-}
+try { Object.assign(S, JSON.parse(localStorage.getItem('dni') || '{}')); } catch (e) {}
 
-// Настройки по умолчанию
-S.set = Object.assign({ theme: 'auto', acc: 'blue', wk: 'mon', dots: '1', bg: 'none', glass: '0' }, S.set);
+S.set = Object.assign({ theme: 'auto', wk: 'mon', dots: '1', glass: '1' }, S.set);
 
-// Палитра акцентных цветов
-const ACC = {
-  blue: ['#2f5fe3', '#7499ff'], indigo: ['#4338ca', '#8b8cff'], purple: ['#7b4fd6', '#a98bff'],
-  pink: ['#c2307f', '#ff7ab8'], red: ['#d6334a', '#ff6b81'], orange: ['#d9730d', '#ffa04d'],
-  brown: ['#8a5a3c', '#c58f6b'], green: ['#1f8a5b', '#4fc98e'], teal: ['#0f8a8a', '#4fd1d1']
-};
-
-// Сохранение данных
-const save = () => {
-  try { localStorage.setItem('dni', JSON.stringify(S)); } catch (e) { console.log('Ошибка сохранения:', e); }
-};
+const save = () => { try { localStorage.setItem('dni', JSON.stringify(S)); } catch (e) {} };
 
 /* ==========================================================================
-   2. ВСПОМОГАТЕЛЬНЫЕ УТИЛИТЫ (Даты, форматирование)
+   2. УТИЛИТЫ ДАТ И ТЕКСТА
    ========================================================================== */
 const p = n => String(n).padStart(2, '0');
 const key = d => d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
@@ -435,48 +729,22 @@ const DOWF = ['Понедельник', 'Вторник', 'Среда', 'Чет�
 const MOODS = ['😭', '🙁', '😐', '🙂', '😎'];
 
 const now = new Date();
-let tab = 'cal'; // Текущая вкладка
-let cy = now.getFullYear(), cm = now.getMonth(); // Текущий месяц календаря
-let sel = key(now); // Выбранная дата
-let gy = cy, gm = cm; // Месяц посещаемости
-let fy = cy, fm = cm; // Месяц финансов
+let tab = 'cal';
+let cy = now.getFullYear(), cm = now.getMonth();
+let sel = key(now);
+let gy = cy, gm = cm;
+let fy = cy, fm = cm;
 
-// Получение дня недели (0 - Пн, 6 - Вс)
 const wd = k => (new Date(k + 'T00:00').getDay() + 6) % 7;
 
 /* ==========================================================================
-   3. ПРИМЕНЕНИЕ НАСТРОЕК (Темы, Фоны, Стекло)
-   ========================================================================== */
-function applySet() {
-  const r = document.documentElement;
-  
-  // Акцентный цвет
-  const a = S.set.acc === 'custom' && S.set.cc ? [S.set.cc, S.set.cc] : ACC[S.set.acc] || ACC.blue;
-  r.style.setProperty('--al', a[0]);
-  r.style.setProperty('--ad', a[1]);
-  
-  // Тема
-  if (S.set.theme === 'auto') r.removeAttribute('data-theme');
-  else r.dataset.theme = S.set.theme;
-  
-  // Фон (растягивается на 100dvh благодаря CSS)
-  if (S.set.bg !== 'none') r.dataset.bg = S.set.bg;
-  else r.removeAttribute('data-bg');
-  
-  // Стекло
-  if (S.set.glass === '1') r.dataset.glass = '1';
-  else r.removeAttribute('data-glass');
-}
-
-/* ==========================================================================
-   4. ЛОГИКА РАБОТЫ С СОБЫТИЯМИ И ДАННЫМИ
+   3. ЛОГИКА СОБЫТИЙ
    ========================================================================== */
 function occurs(e, k) {
   if (e.rep === 'once') return e.date === k;
   if (k < e.start) return false;
   return e.rep === 'daily' || e.days.includes(wd(k));
 }
-
 const evOn = k => S.ev.filter(e => occurs(e, k)).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
 const finOn = k => S.fin.filter(f => f.date === k);
 
@@ -493,12 +761,18 @@ function repLabel(e) {
 }
 
 /* ==========================================================================
-   5. РЕНДЕРИНГ ЭКРАНОВ (HTML-шаблоны)
+   4. РЕНДЕРИНГ ЭКРАНОВ
    ========================================================================== */
+function applySet() {
+  const r = document.documentElement;
+  if (S.set.theme === 'auto') r.removeAttribute('data-theme');
+  else r.dataset.theme = S.set.theme;
+}
+
 function head(y, m) {
   return '<div class="mh"><b>' + MON[m] + ' ' + y + '</b><div class="nav-group">' +
-    '<button data-nav="-1" aria-label="Назад">‹</button>' +
-    '<button data-nav="1" aria-label="Вперёд">›</button>' +
+    '<button data-nav="-1">‹</button>' +
+    '<button data-nav="1">›</button>' +
     '</div></div>';
 }
 
@@ -506,13 +780,10 @@ function grid(y, m, fn) {
   const sun = S.set.wk === 'sun';
   const ord = sun ? [6, 0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6];
   let h = '<div class="gd">' + ord.map(i => '<span class="dw">' + DOW[i] + '</span>').join('');
-  
   const first = sun ? new Date(y, m, 1).getDay() : (new Date(y, m, 1).getDay() + 6) % 7;
   const n = new Date(y, m + 1, 0).getDate();
-  
   for (let i = 0; i < first; i++) h += '<i></i>';
   for (let d = 1; d <= n; d++) h += fn(y + '-' + p(m + 1) + '-' + p(d), d);
-  
   return h + '</div>';
 }
 
@@ -520,7 +791,7 @@ function checkDeadlines() {
   const today = key(new Date());
   const important = S.ev.filter(e => e.important && occurs(e, today));
   if (important.length) {
-    return `<div class="deadline-alert">⚠️ Важное событие сегодня: ${important.map(e => esc(e.title)).join(', ')}</div>`;
+    return `<div class="deadline-alert">⚠️ Важное сегодня: ${important.map(e => esc(e.title)).join(', ')}</div>`;
   }
   return '';
 }
@@ -542,24 +813,35 @@ function dayList() {
   const L = evOn(sel);
   h += L.length ? L.map(e => {
     const lb = repLabel(e);
-    return '<div class="r"><button class="tx ' + (e.important ? 'deadline' : '') + '" data-ed="' + e.id + '">' + esc(e.title) + (lb ? '<small>' + lb + '</small>' : '') + '</button></div>';
+    return `
+    <div class="r" data-swipe="ev" data-id="${e.id}">
+      <div class="r-inner">
+        <button class="tx ${e.important ? 'deadline' : ''}" data-ed="${e.id}">
+          ${esc(e.title)} ${lb ? '<small>' + lb + '</small>' : ''}
+        </button>
+      </div>
+      <button class="r-del-btn" data-del-ev="${e.id}">Удалить</button>
+    </div>`;
   }).join('') : '<p class="em">На этот день ничего нет.</p>';
   
   h += '<button class="add" data-add>+ Добавить в расписание</button>';
   
-  // Настроение
+  // Настроение (Мини-виджет)
   const currentMood = S.moods[sel];
-  h += '<div class="mood-compact"><span>Настроение:</span><div class="moods">';
+  h += '<div class="mood-compact"><span>Настроение</span><div class="moods">';
   for (let i = 0; i < 5; i++) {
     h += `<button class="mood-btn ${currentMood === i ? 'active' : ''}" data-mood="${i}" title="${MOODS[i]}">${MOODS[i]}</button>`;
   }
   h += '</div></div>';
 
-  // Расходы дня
+  // Расходы (Мини-виджет)
   const dayFin = finOn(sel);
   if (dayFin.length) {
     const sum = dayFin.reduce((a, b) => a + b.amount, 0);
-    h += `<div style="margin-top:16px;font-size:15px;font-weight:600;color:#d6334a">💸 Расходы за день: ${sum} ₽</div>`;
+    h += `<div class="fin-item" style="margin-top:16px;border:0;box-shadow:none;padding:16px 0 0 0;background:transparent">
+            <div class="desc" style="color:var(--red);font-weight:600">💸 Расходы за день</div>
+            <div class="sum" style="color:var(--red)">${sum} ₽</div>
+          </div>`;
   }
   return h;
 }
@@ -568,7 +850,16 @@ function vNotes() {
   const L = [...S.notes].sort((a, b) => b.ts - a.ts);
   return (L.length ? L.map(n => {
     const ls = n.text.trim().split('\n');
-    return '<button class="nt" data-note="' + n.id + '"><b>' + esc(ls[0]) + '</b><small>' + esc(ls.slice(1).join(' ').slice(0, 90)) + '</small></button>';
+    return `
+    <div class="nt" data-swipe="nt" data-id="${n.id}">
+      <div class="r-inner">
+        <button style="width:100%;text-align:left" data-note="${n.id}">
+          <b>${esc(ls[0])}</b>
+          <small>${esc(ls.slice(1).join(' ').slice(0, 90))}</small>
+        </button>
+      </div>
+      <button class="r-del-btn" data-del-nt="${n.id}">Удалить</button>
+    </div>`;
   }).join('') : '<p class="em">Заметок пока нет.</p>') + '<button class="add" data-newnote>+ Новая заметка</button>';
 }
 
@@ -580,9 +871,9 @@ function vGym() {
   });
   const pc = w + s ? Math.round(w * 100 / (w + s)) + '%' : '–';
   return head(gy, gm) + 
-    '<div class="st"><div><b>' + w + '</b><span>был</span></div><div><b>' + s + '</b><span>пропуск</span></div><div><b>' + pc + '</b><span>посещаемость</span></div></div>' + 
+    '<div class="st"><div><b>' + w + '</b><span>был</span></div><div><b>' + s + '</b><span>пропуск</span></div><div><b>' + pc + '</b><span>%</span></div></div>' + 
     g + 
-    '<p class="em" style="text-align:center;margin-top:20px">Нажми на день: был, затем пропуск, затем пусто.</p>' +
+    '<p class="em" style="text-align:center;margin-top:20px;margin-bottom:20px">Нажми на день: был, затем пропуск, затем пусто.</p>' +
     '<button class="gym-stat-btn" data-gymstat>Посмотреть статистику</button>';
 }
 
@@ -599,20 +890,30 @@ function vFin() {
   });
   
   const dayFin = S.fin.filter(f => f.date === sel);
-  h += '<div id="dl" style="margin-top:16px"><div class="dh"><b>' + new Date(sel + 'T00:00').getDate() + ' ' + MG[new Date(sel + 'T00:00').getMonth()] + '</b></div>';
+  h += '<div id="dl" style="margin-top:20px"><div class="dh"><b>' + new Date(sel + 'T00:00').getDate() + ' ' + MG[new Date(sel + 'T00:00').getMonth()] + '</b></div>';
   
   if (dayFin.length) {
     dayFin.forEach(f => {
-      const cat = S.cats.find(c => c.id === f.catId) || { name: 'Другое', color: '#999' };
-      h += `<div class="fin-item"><div class="desc"><span class="cat-dot" style="background:${cat.color}"></span>${esc(cat.name)}</div><div class="sum">${f.amount} ₽</div></div>`;
+      const cat = S.cats.find(c => c.id === f.catId) || { name: 'Другое', color: '#8e8e93' };
+      h += `
+      <div class="fin-item" data-swipe="fin" data-id="${f.id}">
+        <div class="r-inner" style="display:flex;justify-content:space-between;width:100%">
+          <div class="desc"><span class="cat-dot" style="background:${cat.color}"></span>${esc(cat.name)}</div>
+          <div class="sum">${f.amount} ₽</div>
+        </div>
+        <button class="r-del-btn" data-del-fin="${f.id}">Удалить</button>
+      </div>`;
     });
   } else {
     h += '<p class="em">Нет трат в этот день.</p>';
   }
   h += '</div>';
   
-  h += '<button class="add" data-addfin>+ Добавить расход</button>';
   h += '<button class="fin-stat-btn" data-finstat>Посмотреть статистику</button>';
+  
+  // Плавающая кнопка +
+  h += `<button class="fab" data-addfin><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`;
+  
   return h;
 }
 
@@ -622,10 +923,8 @@ function vSet() {
 
 function vLook() {
   const o = (k, v, t) => '<button data-set="' + k + '" data-v="' + v + '" class="' + (S.set[k] === v ? 'on' : '') + '">' + t + '</button>';
-  return '<button class="bk" data-t="set">‹ Настройки</button>' +
+  return '<button class="bk" data-t="set" style="color:var(--acc);font-weight:600;padding:10px 0">‹ Настройки</button>' +
     '<div class="sl">Тема</div><div class="seg">' + o('theme', 'auto', 'Системная') + o('theme', 'light', 'Светлая') + o('theme', 'dark', 'Тёмная') + '</div>' +
-    '<div class="sl">Фон приложения</div><div class="seg" style="flex-wrap:wrap;gap:4px">' + o('bg', 'none', 'Нет') + o('bg', 'sunset', 'Закат') + o('bg', 'ocean', 'Океан') + o('bg', 'night', 'Ночь') + '</div>' +
-    '<div class="sl">Эффект стекла</div><div class="seg">' + o('glass', '0', 'Выкл') + o('glass', '1', 'Вкл') + '</div>' +
     '<div class="sl">Неделя начинается с</div><div class="seg">' + o('wk', 'mon', 'Пн') + o('wk', 'sun', 'Вс') + '</div>';
 }
 
@@ -646,26 +945,23 @@ function render() {
 }
 
 /* ==========================================================================
-   6. МОДАЛЬНЫЕ ОКНА (Шторки)
+   5. МОДАЛЬНЫЕ ОКНА
    ========================================================================== */
 function sh(h, full) {
   $('#sh').innerHTML = h;
   $('#sh').classList.toggle('full', !!full);
   $('#ov').classList.add('o');
 }
-
 function cl() {
-  S.notes = S.notes.filter(n => n.text.trim());
-  save();
   $('#ov').classList.remove('o');
   setTimeout(() => {
     if (!$('#ov').classList.contains('o')) $('#sh').innerHTML = '';
-  }, 350);
+  }, 400);
   render();
 }
 
 /* ==========================================================================
-   7. ДОБАВЛЕНИЕ И РЕДАКТИРОВАНИЕ ДАННЫХ
+   6. ДОБАВЛЕНИЕ И РЕДАКТИРОВАНИЕ
    ========================================================================== */
 function openEv(id) {
   const e = id ? S.ev.find(x => x.id === id) : null;
@@ -673,8 +969,8 @@ function openEv(id) {
   let days = e && e.days ? [...e.days] : [];
 
   sh('<input id="ti" placeholder="Название" value="' + esc(e ? e.title : '') + '">' +
-    '<label class="lb" style="display:flex;justify-content:space-between;margin:10px 0">Время<input id="tm" type="time" style="width:auto;padding:8px" value="' + (e && e.time || '') + '"></label>' +
-    '<label class="lb" style="display:flex;justify-content:space-between;margin:10px 0"><span>Важное (дедлайн)</span><input type="checkbox" id="imp" style="width:20px;height:20px;accent-color:#d6334a;padding:0;border:0" ' + (e && e.important ? 'checked' : '') + '></label>' +
+    '<label class="lb" style="display:flex;justify-content:space-between;margin:10px 0;color:var(--mut);font-size:15px">Время<input id="tm" type="time" style="width:auto;padding:8px;border-radius:8px" value="' + (e && e.time || '') + '"></label>' +
+    '<label class="lb" style="display:flex;justify-content:space-between;margin:10px 0;color:var(--mut);font-size:15px"><span>Важное (дедлайн)</span><input type="checkbox" id="imp" style="width:20px;height:20px;accent-color:var(--red)" ' + (e && e.important ? 'checked' : '') + '></label>' +
     '<div class="seg" id="sg"></div>' +
     '<div class="dys" id="dy" style="margin-top:10px;display:flex;gap:6px"></div>' +
     '<button class="pr" id="sv" style="margin-top:16px">Сохранить</button>' +
@@ -684,118 +980,164 @@ function openEv(id) {
   const paint = () => {
     $('#sg').innerHTML = [['once', 'Один раз'], ['daily', 'Каждый день'], ['days', 'По дням']].map(([v, t]) => '<button data-r="' + v + '" class="' + (rep === v ? 'on' : '') + '">' + t + '</button>').join('');
     $('#dy').style.display = rep === 'days' ? 'flex' : 'none';
-    $('#dy').innerHTML = DOW.map((d, i) => '<button data-d="' + i + '" style="flex:1;height:40px;border-radius:12px;background:var(--sf);font-size:14px" class="' + (days.includes(i) ? 'on' : '') + '">' + d + '</button>').join('');
-    
-    // Подсветка выбранных дней
+    $('#dy').innerHTML = DOW.map((d, i) => '<button data-d="' + i + '" style="flex:1;height:40px;border-radius:10px;background:var(--card-bg);font-size:14px" class="' + (days.includes(i) ? 'on' : '') + '">' + d + '</button>').join('');
     document.querySelectorAll('#dy button.on').forEach(b => {
       b.style.background = 'var(--acc)';
-      b.style.color = 'var(--bg)';
+      b.style.color = '#fff';
     });
   };
   paint();
 
-  $('#sg').onclick = ev => {
-    const r = ev.target.dataset.r;
-    if (r) {
-      rep = r;
-      if (r === 'days' && !days.length) days = [5];
-      paint();
-    }
-  };
-  $('#dy').onclick = ev => {
-    const d = ev.target.dataset.d;
-    if (d !== undefined) {
-      const i = +d;
-      days = days.includes(i) ? days.filter(x => x !== i) : [...days, i];
-      paint();
-    }
-  };
+  $('#sg').onclick = ev => { const r = ev.target.dataset.r; if (r) { rep = r; if (r === 'days' && !days.length) days = [5]; paint(); } };
+  $('#dy').onclick = ev => { const d = ev.target.dataset.d; if (d !== undefined) { const i = +d; days = days.includes(i) ? days.filter(x => x !== i) : [...days, i]; paint(); } };
   $('#x').onclick = cl;
   $('#sv').onclick = () => {
     const title = $('#ti').value.trim();
     if (!title) { $('#ti').focus(); return; }
     if (rep === 'days' && !days.length) return;
-    
     const isImp = $('#imp').checked;
     const o = { id: e ? e.id : 'e' + Date.now(), title, time: $('#tm').value, rep, days: rep === 'days' ? [...days] : [], date: (e && e.date) || sel, start: (e && e.start) || sel, important: isImp };
-    
-    if (e) S.ev[S.ev.indexOf(e)] = o;
-    else S.ev.push(o);
-    
+    if (e) S.ev[S.ev.indexOf(e)] = o; else S.ev.push(o);
     save(); cl();
   };
-  
   const rm = $('#rm');
-  if (rm) {
-    rm.onclick = () => {
-      if (rm.dataset.c) { S.ev = S.ev.filter(x => x.id !== e.id); save(); cl(); }
-      else { rm.dataset.c = 1; rm.textContent = 'Нажми ещё раз, чтобы удалить'; }
-    };
-  }
+  if (rm) rm.onclick = () => { if (rm.dataset.c) { S.ev = S.ev.filter(x => x.id !== e.id); save(); cl(); } else { rm.dataset.c = 1; rm.textContent = 'Нажми ещё раз'; } };
 }
 
 function openNote(id) {
   let n = id && S.notes.find(x => x.id === id);
   if (!n) { n = { id: 'n' + Date.now(), text: '', ts: Date.now() }; S.notes.push(n); }
-  
-  sh('<textarea id="ta" placeholder="Заметка"></textarea><div class="row2"><button class="dl" id="rm">Удалить</button><button class="pr" id="ok">Готово</button></div>', true);
-  
+  sh('<textarea id="ta" placeholder="Текст заметки..."></textarea><div class="row2"><button class="dl" id="rm">Удалить</button><button class="pr" id="ok">Готово</button></div>', true);
   const ta = $('#ta'); ta.value = n.text; ta.focus();
   ta.oninput = () => { n.text = ta.value; n.ts = Date.now(); save(); };
-  
   $('#ok').onclick = cl;
   $('#rm').onclick = () => { S.notes = S.notes.filter(x => x.id !== n.id); save(); cl(); };
 }
 
 function openAddFin() {
-  let catHtml = S.cats.map(c => `<button class="cat-btn" data-cat="${c.id}" style="background:${c.color}20;color:${c.color};border:1px solid ${c.color}40;padding:8px 12px;border-radius:8px;font-size:14px;margin:0 6px 6px 0">${esc(c.name)}</button>`).join('');
-  catHtml += `<button id="add-cat" style="background:var(--sf);border:1px dashed var(--mut);padding:8px 12px;border-radius:8px;font-size:14px">+ Своя</button>`;
+  // Генерация кнопок категорий
+  let catHtml = S.cats.map(c => `<button class="cat-btn" data-cat="${c.id}" style="background:${c.color}15;color:${c.color};border:1px solid ${c.color}30;padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600;margin:0 8px 8px 0">${esc(c.name)}</button>`).join('');
+  catHtml += `<button id="manage-cats" style="background:var(--card-bg);color:var(--acc);border:1px dashed var(--line);padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600">Управление</button>`;
   
-  sh(`<h3 style="margin:0 0 10px 0;font-size:18px">Новый расход</h3>
-      <input id="fin-sum" type="number" placeholder="Сумма (₽)" style="font-size:24px;font-weight:bold">
-      <div class="sl" style="margin:12px 0 6px">Категория</div>
-      <div id="cat-list" style="display:flex;flex-wrap:wrap;margin-bottom:12px">${catHtml}</div>
-      <button class="pr" id="save-fin">Сохранить</button>
+  sh(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0;font-size:20px;font-weight:700">Новый расход</h3>
+        <div id="fin-display" style="font-size:28px;font-weight:800;color:var(--fg)">0 ₽</div>
+      </div>
+      
+      <input type="hidden" id="fin-sum" value="">
+      
+      <div class="sl" style="margin:10px 0 6px">Категория</div>
+      <div id="cat-list" style="display:flex;flex-wrap:wrap;margin-bottom:16px">${catHtml}</div>
+      
+      <!-- Встроенная цифровая клавиатура (Numpad) -->
+      <div class="numpad" id="numpad">
+        <button data-num="1">1</button><button data-num="2">2</button><button data-num="3">3</button>
+        <button data-num="4">4</button><button data-num="5">5</button><button data-num="6">6</button>
+        <button data-num="7">7</button><button data-num="8">8</button><button data-num="9">9</button>
+        <button data-num="." class="num-fn">,</button><button data-num="0">0</button><button data-fn="del" class="num-fn">⌫</button>
+      </div>
+      
+      <button class="pr" id="save-fin" style="margin-top:16px">Сохранить</button>
       <button class="cl" id="x">Отмена</button>`);
       
   let selectedCat = S.cats.length ? S.cats[0].id : null;
+  let currentSum = "";
+  const display = $('#fin-display');
+  const inputSum = $('#fin-sum');
   
+  // Установка первой категории
+  const firstBtn = document.querySelector('#cat-list [data-cat]');
+  if (firstBtn) firstBtn.style.boxShadow = '0 0 0 2px var(--acc)';
+  
+  // Логика цифровой клавиатуры
+  $('#numpad').onclick = (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    
+    if (btn.dataset.fn === 'del') {
+      currentSum = currentSum.slice(0, -1);
+    } else if (btn.dataset.num) {
+      if (btn.dataset.num === '.' && currentSum.includes('.')) return;
+      if (currentSum.length < 9) currentSum += btn.dataset.num;
+    }
+    
+    inputSum.value = currentSum;
+    display.textContent = currentSum ? currentSum + ' ₽' : '0 ₽';
+  };
+  
+  // Управление категориями
   $('#cat-list').onclick = (e) => {
     const btn = e.target.closest('[data-cat]');
     if (btn) {
       selectedCat = btn.dataset.cat;
       document.querySelectorAll('#cat-list button').forEach(b => b.style.boxShadow = 'none');
-      btn.style.boxShadow = '0 0 0 2px var(--fg)';
+      btn.style.boxShadow = '0 0 0 2px var(--acc)';
       return;
     }
-    if (e.target.id === 'add-cat') {
-      const name = prompt('Название категории:');
-      if (name) {
-        const colors = ['#e5484d', '#3e63dd', '#46a758', '#f5a524', '#8e4ec6'];
-        const color = colors[S.cats.length % colors.length];
-        S.cats.push({ id: 'c' + Date.now(), name, color });
-        save();
-        openAddFin();
-      }
+    
+    if (e.target.id === 'manage-cats') {
+      // Окно управления категориями
+      let manageHtml = S.cats.map(c => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--card-bg);border-radius:12px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="cat-dot" style="background:${c.color};margin:0"></span>
+            <span style="font-weight:500">${esc(c.name)}</span>
+          </div>
+          <button data-del-cat="${c.id}" style="color:var(--red);font-weight:600;padding:4px 8px">Удалить</button>
+        </div>
+      `).join('');
+      
+      sh(`<h3 style="margin:0 0 16px 0;font-size:20px;font-weight:700">Управление категориями</h3>
+          <div style="max-height:60vh;overflow-y:auto">${manageHtml}</div>
+          <button class="pr" id="add-cat-btn" style="margin-top:16px">+ Добавить категорию</button>
+          <button class="cl" id="back-to-fin">Назад</button>`);
+          
+      $('#add-cat-btn').onclick = () => {
+        const name = prompt('Название категории:');
+        if (name) {
+          const colors = ['#ff9f0a', '#0a84ff', '#30d158', '#ff375f', '#bf5af2', '#5e5ce6'];
+          const color = colors[S.cats.length % colors.length];
+          S.cats.push({ id: 'c' + Date.now(), name, color });
+          save();
+          openAddFin(); // Возврат к расходам
+        }
+      };
+      
+      $('#back-to-fin').onclick = () => openAddFin();
+      
+      // Удаление категории
+      document.querySelectorAll('[data-del-cat]').forEach(b => {
+        b.onclick = () => {
+          const catId = b.dataset.delCat;
+          // Переносим траты в "Другое" (или создаем его)
+          let otherCat = S.cats.find(c => c.name === 'Другое');
+          if (!otherCat) {
+            otherCat = { id: 'c_other', name: 'Другое', color: '#8e8e93' };
+            S.cats.push(otherCat);
+          }
+          S.fin.forEach(f => { if (f.catId === catId) f.catId = otherCat.id; });
+          
+          S.cats = S.cats.filter(c => c.id !== catId);
+          save();
+          openAddFin(); // Обновляем
+        };
+      });
+      return;
     }
   };
   
-  const firstBtn = document.querySelector('#cat-list [data-cat]');
-  if (firstBtn) firstBtn.style.boxShadow = '0 0 0 2px var(--fg)';
-  
   $('#x').onclick = cl;
   $('#save-fin').onclick = () => {
-    const sum = parseFloat($('#fin-sum').value);
-    if (!sum || sum <= 0) { $('#fin-sum').focus(); return; }
+    const sum = parseFloat(inputSum.value);
+    if (!sum || sum <= 0) { display.style.color = 'var(--red)'; setTimeout(() => display.style.color = 'var(--fg)', 500); return; }
     if (!selectedCat) { alert('Выберите категорию'); return; }
-    
     S.fin.push({ id: 'f' + Date.now(), date: sel, amount: sum, catId: selectedCat });
     save(); cl();
   };
 }
 
 /* ==========================================================================
-   8. СТАТИСТИКА И ГРАФИКИ (С анимациями)
+   7. СТАТИСТИКА И ГРАФИКИ
    ========================================================================== */
 function openStatModal(title, dataObj, total, type) {
   let legendHtml = '', barsHtml = '', donutSegments = [], curAngle = 0;
@@ -803,59 +1145,51 @@ function openStatModal(title, dataObj, total, type) {
   if (type === 'gym') {
     const pc = total ? Math.round(dataObj.w * 100 / total) : 0;
     donutSegments.push(`var(--acc) 0deg ${pc * 3.6}deg`);
-    donutSegments.push(`var(--line) ${pc * 3.6}deg 360deg`);
+    donutSegments.push(`var(--sf) ${pc * 3.6}deg 360deg`);
     
     for (let i = 3; i >= 0; i--) {
       const d = new Date(gy, gm - i, 1), mStr = d.getFullYear() + '-' + p(d.getMonth() + 1);
       let mw = 0, ms = 0;
       for (const k in S.gym) if (k.startsWith(mStr)) { S.gym[k] === 'y' ? mw++ : ms++; }
       const mt = mw + ms, mpc = mt ? Math.round(mw * 100 / mt) : 0;
-      barsHtml += `<div class="bar-wrap"><div class="bar" style="height:${mpc}%;animation-delay:${(3 - i) * 0.1}s"></div><span>${MON[d.getMonth()].slice(0, 3)}</span></div>`;
+      barsHtml += `<div class="bar-wrap"><div class="bar" style="height:${mpc}%"></div><span>${MON[d.getMonth()].slice(0, 3)}</span></div>`;
     }
   } else {
     if (total > 0) {
       for (const catId in dataObj) {
-        const cat = S.cats.find(c => c.id === catId) || { name: 'Другое', color: '#999' };
+        const cat = S.cats.find(c => c.id === catId) || { name: 'Другое', color: '#8e8e93' };
         const angle = (dataObj[catId] / total) * 360;
         donutSegments.push(`${cat.color} ${curAngle}deg ${curAngle + angle}deg`);
         legendHtml += `<div class="legend-item"><span><span class="cat-dot" style="background:${cat.color}"></span>${esc(cat.name)}</span><b>${dataObj[catId]} ₽</b></div>`;
         curAngle += angle;
       }
     } else {
-      donutSegments.push(`var(--line) 0deg 360deg`);
+      donutSegments.push(`var(--sf) 0deg 360deg`);
       legendHtml = '<p class="em" style="text-align:center">Нет данных за этот месяц</p>';
     }
     const cats = Object.keys(dataObj), maxVal = Math.max(...Object.values(dataObj), 1);
     cats.forEach((catId, i) => {
-      const cat = S.cats.find(c => c.id === catId) || { name: 'Другое', color: '#999' };
-      barsHtml += `<div class="bar-wrap"><div class="bar" style="height:${(dataObj[catId] / maxVal) * 100}%;background:${cat.color};animation-delay:${i * 0.1}s"></div><span style="font-size:10px;text-align:center">${esc(cat.name).slice(0, 4)}</span></div>`;
+      const cat = S.cats.find(c => c.id === catId) || { name: 'Другое', color: '#8e8e93' };
+      barsHtml += `<div class="bar-wrap"><div class="bar" style="height:${(dataObj[catId] / maxVal) * 100}%;background:${cat.color}"></div><span style="font-size:10px;text-align:center">${esc(cat.name).slice(0, 4)}</span></div>`;
     });
   }
 
   const bgGradient = `conic-gradient(${donutSegments.join(',')})`;
-  const donutHtml = `<div class="donut" id="modal-donut"><div class="donut-inner"><b>${type === 'gym' ? Math.round(dataObj.w * 100 / total) + '%' : total + ' ₽'}</b><span>${type === 'gym' ? 'посещено' : 'потрачено'}</span></div></div>`;
+  const donutHtml = `<div class="donut" id="modal-donut" style="background:${bgGradient}"><div class="donut-inner"><b>${type === 'gym' ? Math.round(dataObj.w * 100 / total) + '%' : total + ' ₽'}</b><span>${type === 'gym' ? 'посещено' : 'потрачено'}</span></div></div>`;
   const barsWrap = `<div class="bar-chart">${barsHtml}</div>`;
 
-  sh(`<h3 style="margin:0 0 10px 0;font-size:18px;text-align:center">${title}</h3>
-      <div class="seg" id="stat-seg" style="margin-bottom:16px">
+  sh(`<h3 style="margin:0 0 16px 0;font-size:20px;font-weight:700;text-align:center">${title}</h3>
+      <div class="seg" id="stat-seg" style="margin-bottom:20px">
         <button data-stype="donut" class="on">Пончик</button>
         <button data-stype="bars">Столбцы</button>
       </div>
       <div id="stat-chart-area" style="width:100%;display:flex;justify-content:center;flex-direction:column;align-items:center;min-height:220px">
         ${donutHtml}
-        ${legendHtml ? `<div class="legend" style="margin-top:20px">${legendHtml}</div>` : ''}
+        ${legendHtml ? `<div class="legend" style="margin-top:24px">${legendHtml}</div>` : ''}
       </div>
       <button class="cl" id="x">Закрыть</button>`);
       
   $('#x').onclick = cl;
-  
-  // Анимация пончика (против часовой)
-  const d = $('#modal-donut');
-  d.style.background = `conic-gradient(var(--line) 0deg 360deg)`;
-  setTimeout(() => {
-    d.style.transition = 'background 1s linear';
-    d.style.background = bgGradient;
-  }, 50);
 
   $('#stat-seg').onclick = (e) => {
     const btn = e.target.closest('button');
@@ -864,15 +1198,8 @@ function openStatModal(title, dataObj, total, type) {
     btn.classList.add('on');
     
     const area = $('#stat-chart-area');
-    
     if (btn.dataset.stype === 'donut') {
-      area.innerHTML = donutHtml + (legendHtml ? `<div class="legend" style="margin-top:20px">${legendHtml}</div>` : '');
-      const newD = $('#modal-donut');
-      newD.style.background = `conic-gradient(var(--line) 0deg 360deg)`;
-      setTimeout(() => {
-        newD.style.transition = 'background 1s linear';
-        newD.style.background = bgGradient;
-      }, 50);
+      area.innerHTML = donutHtml + (legendHtml ? `<div class="legend" style="margin-top:24px">${legendHtml}</div>` : '');
     } else {
       area.innerHTML = barsWrap;
     }
@@ -892,9 +1219,6 @@ function openGymStat() {
   openStatModal('Посещаемость', { w, s }, w + s, 'gym');
 }
 
-/* ==========================================================================
-   9. НАВИГАЦИЯ ПО МЕСЯЦАМ
-   ========================================================================== */
 function mv(n) {
   if (tab === 'cal') { const d = new Date(cy, cm + n, 1); cy = d.getFullYear(); cm = d.getMonth(); }
   else if (tab === 'gym') { const d = new Date(gy, gm + n, 1); gy = d.getFullYear(); gm = d.getMonth(); }
@@ -902,7 +1226,7 @@ function mv(n) {
 }
 
 /* ==========================================================================
-   10. ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛИКОВ
+   8. ОБРАБОТКА КЛИКОВ (Свайпы и действия)
    ========================================================================== */
 document.addEventListener('click', ev => {
   if (ev.target.id === 'ov') { cl(); return; }
@@ -914,51 +1238,46 @@ document.addEventListener('click', ev => {
   const D = b.dataset;
   
   if (b.id === 'mb') { menu(); return; }
+  if (D.t) { tab = D.t; menu(false); $('#m').scrollTop = 0; render(); return; }
   
-  // Переключение вкладок
-  if (D.t) { tab = D.t; menu(false); $('#m').scrollTop = 0; render(); fade('#m'); return; }
-  
-  // Настройки
   if (D.set) {
-    S.set[D.set] = D.v;
-    save(); applySet();
+    S.set[D.set] = D.v; save(); applySet();
     [...b.parentNode.children].forEach(x => x.classList.toggle('on', x === b));
     return;
   }
   
-  // Сброс данных
   if (D.reset !== undefined) {
-    if (b.dataset.c) { S = { ev: [], done: {}, notes: [], gym: {}, moods: {}, fin: [], cats: [{ id: 'c1', name: 'Еда', color: '#e5484d' }, { id: 'c2', name: 'Транспорт', color: '#3e63dd' }], set: S.set }; save(); render(); }
-    else { b.dataset.c = 1; b.textContent = 'Нажми ещё раз, чтобы стереть'; }
+    if (b.dataset.c) { 
+      if(confirm('Вы уверены, что хотите стереть ВСЕ данные?')) {
+        S = { ev: [], done: {}, notes: [], gym: {}, moods: {}, fin: [], cats: [{ id: 'c1', name: 'Еда', color: '#ff9f0a' }, { id: 'c2', name: 'Транспорт', color: '#0a84ff' }], set: S.set }; 
+        save(); render(); 
+      }
+    } else { 
+      b.dataset.c = 1; 
+      b.textContent = 'Нажми ещё раз для подтверждения'; 
+    }
     return;
   }
   
-  // Навигация по месяцам
-  if (D.nav) { mv(+D.nav); render(); fade('#m'); return; }
-  
-  // Выбор дня
+  if (D.nav) { mv(+D.nav); render(); return; }
   if (D.day) {
     sel = D.day;
     document.querySelectorAll('.c.s').forEach(x => x.classList.remove('s'));
     b.classList.add('s');
     if (tab === 'cal') $('#dl').innerHTML = dayList();
     else if (tab === 'fin') render();
-    fade('#dl');
     return;
   }
   
-  // Добавление и редактирование
   if (D.add !== undefined) { openEv(); return; }
   if (D.ed) { openEv(D.ed); return; }
   if (D.addfin !== undefined) { openAddFin(); return; }
   if (D.finstat !== undefined) { openFinStat(); return; }
   if (D.gymstat !== undefined) { openGymStat(); return; }
   
-  // Заметки
   if (D.note) { openNote(D.note); return; }
   if (D.newnote !== undefined) { openNote(); return; }
   
-  // Настроение
   if (D.mood !== undefined) {
     if (S.moods[sel] === +D.mood) delete S.moods[sel];
     else S.moods[sel] = +D.mood;
@@ -967,7 +1286,6 @@ document.addEventListener('click', ev => {
     return;
   }
   
-  // Посещаемость
   if (D.gym) {
     const v = S.gym[D.gym];
     if (!v) S.gym[D.gym] = 'y';
@@ -979,7 +1297,6 @@ document.addEventListener('click', ev => {
     b.classList.remove('gy', 'gn');
     if (n) b.classList.add('g' + n);
     
-    // Пересчет статистики на лету
     let w = 0, s = 0;
     const pf = gy + '-' + p(gm + 1);
     for (const k in S.gym) if (k.slice(0, 7) === pf) { S.gym[k] === 'y' ? w++ : s++; }
@@ -991,32 +1308,86 @@ document.addEventListener('click', ev => {
 });
 
 /* ==========================================================================
-   11. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ UI
+   9. СВАЙПЫ (Touch events)
    ========================================================================== */
-function fade(s) {
-  const e = $(s);
-  if (!e) return;
-  e.classList.remove('fi');
-  void e.offsetWidth;
-  e.classList.add('fi');
-}
+let startX = 0, startY = 0, currentSwipeEl = null;
 
-function menu(o) {
-  document.body.classList.toggle('mo', o === undefined ? !document.body.classList.contains('mo') : o);
-}
-
-// Свайпы для открытия/закрытия меню
-let tx = 0, ty = 0;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
-document.addEventListener('touchend', e => {
-  const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
-  if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5 || $('#ov').classList.contains('o')) return;
-  const o = document.body.classList.contains('mo');
-  if (!o && dx > 0 && tx < innerWidth * 0.4) menu(true);
-  else if (o && dx < 0) menu(false);
+document.addEventListener('touchstart', e => {
+  if ($('#ov').classList.contains('o')) return;
+  const row = e.target.closest('.r, .fin-item, .nt');
+  if (!row) return;
+  
+  // Закрываем предыдущий открытый свайп
+  if (currentSwipeEl && currentSwipeEl !== row) {
+    currentSwipeEl.classList.remove('swiped');
+  }
+  
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  currentSwipeEl = row;
 }, { passive: true });
 
-// Запуск приложения
+document.addEventListener('touchmove', e => {
+  if (!currentSwipeEl) return;
+  const dx = e.touches[0].clientX - startX;
+  const dy = e.touches[0].clientY - startY;
+  
+  // Если свайп больше горизонтальный, чем вертикальный
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+    if (e.cancelable) e.preventDefault(); // Блокируем скролл
+    const inner = currentSwipeEl.querySelector('.r-inner');
+    if (inner) {
+      const move = Math.max(-80, Math.min(0, dx));
+      inner.style.transform = `translateX(${move}px)`;
+    }
+  }
+}, { passive: false });
+
+document.addEventListener('touchend', e => {
+  if (!currentSwipeEl) return;
+  const dx = e.changedTouches[0].clientX - startX;
+  const dy = e.changedTouches[0].clientY - startY;
+  
+  const inner = currentSwipeEl.querySelector('.r-inner');
+  
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    if (dx < 0) {
+      // Свайп влево (удаление)
+      currentSwipeEl.classList.add('swiped');
+      if (inner) inner.style.transform = ''; 
+    } else {
+      // Свайп вправо (закрытие)
+      currentSwipeEl.classList.remove('swiped');
+      if (inner) inner.style.transform = '';
+    }
+  } else {
+    // Не дотянули
+    if (inner) inner.style.transform = '';
+    if (!currentSwipeEl.classList.contains('swiped')) {
+      currentSwipeEl = null;
+    }
+  }
+  
+  setTimeout(() => { if (currentSwipeEl && currentSwipeEl.classList.contains('swiped')) currentSwipeEl = null; }, 300);
+}, { passive: true });
+
+// Обработка кнопок удаления после свайпа
+document.addEventListener('click', e => {
+  const delEv = e.target.closest('[data-del-ev]');
+  if (delEv) { S.ev = S.ev.filter(x => x.id !== delEv.dataset.delEv); save(); render(); return; }
+  
+  const delNt = e.target.closest('[data-del-nt]');
+  if (delNt) { S.notes = S.notes.filter(x => x.id !== delNt.dataset.delNt); save(); render(); return; }
+  
+  const delFin = e.target.closest('[data-del-fin]');
+  if (delFin) { S.fin = S.fin.filter(x => x.id !== delFin.dataset.delFin); save(); render(); return; }
+});
+
+/* ==========================================================================
+   10. УТИЛИТЫ И ЗАПУСК
+   ========================================================================== */
+function menu(o) { document.body.classList.toggle('mo', o === undefined ? !document.body.classList.contains('mo') : o); }
+
 applySet();
 render();
 </script>
