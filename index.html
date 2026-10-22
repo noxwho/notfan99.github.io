@@ -42,7 +42,9 @@ main .mi{border-radius:0;padding:14px 0;border-bottom:1px solid var(--line)}
 h1{font-size:28px;margin:6px 0 14px}
 .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .mh b{font-size:22px;font-weight:650}
-.mh button{font-size:26px;width:42px;height:42px;color:var(--mut)}
+.mh .nav-group{display:flex;align-items:center;gap:6px}
+.mh .nav-group button{font-size:26px;width:36px;height:36px;color:var(--mut);display:flex;justify-content:center;align-items:center}
+.mh .share-ico{color:var(--acc);width:36px;height:36px;display:flex;justify-content:center;align-items:center;margin-left:4px}
 .gd{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
 .dw{font-size:12px;color:var(--mut);padding:6px 0}
 .c{height:44px;position:relative;border-radius:12px;display:flex;align-items:center;justify-content:center}
@@ -104,23 +106,24 @@ textarea{flex:1;min-height:40vh;width:100%;border:0;background:none;font-size:17
 .row2{display:flex;gap:10px}
 .row2 .pr{flex:1}
 
-/* Новые стили для Mood Tracker и Share */
-.mood-box{margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
-.mood-title{font-size:15px;font-weight:600;margin-bottom:12px;color:var(--mut)}
-.mood-row{display:flex;justify-content:space-between;gap:8px}
-.mood-btn{font-size:28px;padding:8px;border-radius:12px;background:var(--sf);flex:1;display:flex;justify-content:center;align-items:center;transition:transform .2s, background .2s}
+/* Компактный трекер настроения */
+.mood-compact{display:flex;justify-content:space-between;align-items:center;background:var(--sf);border-radius:12px;padding:4px;margin-top:20px;margin-bottom:10px}
+.mood-compact span{font-size:13px;color:var(--mut);padding-left:8px;font-weight:500}
+.mood-compact .moods{display:flex;gap:2px}
+.mood-btn{font-size:20px;padding:6px 8px;border-radius:8px;transition:background .2s, transform .1s;opacity:0.4}
 .mood-btn:active{transform:scale(.9)}
-.mood-btn.active{background:var(--acc);box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--acc)}
-.share-btn{width:100%;padding:14px;background:var(--sf);color:var(--acc);border-radius:12px;font-weight:600;margin-top:24px;display:flex;justify-content:center;align-items:center;gap:8px}
-#share-canvas-wrap{position:absolute;left:-9999px;top:0;width:400px;padding:20px;background:#fff;color:#000;border-radius:16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
-.sc-header{text-align:center;margin-bottom:20px}
-.sc-header h2{margin:0;font-size:22px}
+.mood-btn.active{background:var(--bg);opacity:1;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+
+/* Скрытый контейнер для картинки */
+#share-canvas-wrap{position:absolute;left:-9999px;top:0;width:400px;padding:24px;background:#ffffff;color:#111;border-radius:16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.sc-header{text-align:center;margin-bottom:24px;border-bottom:2px solid #f0f0f0;padding-bottom:12px}
+.sc-header h2{margin:0;font-size:24px;color:#111}
 .sc-header p{margin:4px 0 0;color:#666;font-size:14px}
-.sc-day{margin-bottom:16px;border-bottom:1px solid #eee;padding-bottom:12px}
-.sc-date{font-weight:600;font-size:15px;margin-bottom:8px;display:flex;justify-content:space-between}
+.sc-day{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f0f0f0}
+.sc-date{font-weight:600;font-size:15px;margin-bottom:8px;display:flex;justify-content:space-between;color:#333}
 .sc-mood{font-size:20px}
-.sc-ev{font-size:14px;margin:4px 0;padding-left:10px;border-left:3px solid #3e63dd;color:#333}
-.sc-empty{font-size:13px;color:#999;font-style:italic}
+.sc-ev{font-size:14px;margin:6px 0;padding:6px 10px;background:#f8f9fa;border-radius:6px;border-left:3px solid #3e63dd;color:#222}
+.sc-empty{font-size:13px;color:#999;font-style:italic;margin-left:4px}
 </style>
 </head>
 <body>
@@ -136,7 +139,7 @@ textarea{flex:1;min-height:40vh;width:100%;border:0;background:none;font-size:17
 </aside>
 <div id="ov"><div id="sh"></div></div>
 
-<!-- Скрытый контейнер для генерации картинки -->
+<!-- Контейнер для генерации картинки -->
 <div id="share-canvas-wrap"></div>
 
 <script>
@@ -153,12 +156,11 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const MON=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 const MG=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 const DOW=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-const DOWF=['понедельник','вторник','среда','четверг','пятница','суббота','воскресенье'];
+const DOWF=['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
 const now=new Date();
 let tab='cal',cy=now.getFullYear(),cm=now.getMonth(),sel=key(now),gy=cy,gm=cm;
 const wd=k=>(new Date(k+'T00:00').getDay()+6)%7;
 
-// Эмодзи для настроения
 const MOODS = ['😭', '🙁', '😐', '🙂', '😎'];
 const MOOD_TITLES = ['Ужасно', 'Плохо', 'Нормально', 'Хорошо', 'Отлично'];
 
@@ -175,7 +177,12 @@ function repLabel(e){
   if(e.rep==='days')a.push(e.days.length===1?'каждый '+['понедельник','вторник','среду','четверг','пятницу','субботу','воскресенье'][e.days[0]]:'по дням: '+[...e.days].sort().map(i=>DOW[i].toLowerCase()).join(', '));
   return a.join(', ');
 }
-function head(y,m){return '<div class="mh"><b>'+MON[m]+' '+y+'</b><span><button data-nav="-1" aria-label="Назад">‹</button><button data-nav="1" aria-label="Вперёд">›</button></span></div>'}
+function head(y,m){
+  return '<div class="mh"><b>'+MON[m]+' '+y+'</b><div class="nav-group">'+
+  '<button data-nav="-1" aria-label="Назад">‹</button><button data-nav="1" aria-label="Вперёд">›</button>'+
+  '<button class="share-ico" data-share title="Поделиться неделей"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>'+
+  '</div></div>';
+}
 function grid(y,m,fn){
   const sun=S.set.wk==='sun',ord=sun?[6,0,1,2,3,4,5]:[0,1,2,3,4,5,6];let h='<div class="gd">'+ord.map(i=>'<span class="dw">'+DOW[i]+'</span>').join('');
   const first=sun?new Date(y,m,1).getDay():(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate();
@@ -199,18 +206,17 @@ function dayList(){
     return '<div class="r"><button class="tx" data-ed="'+e.id+'">'+esc(e.title)+(lb?'<small>'+lb+'</small>':'')+'</button></div>';
   }).join(''):'<p class="em">На этот день ничего нет.</p>';
   
-  // Блок Mood Tracker
-  h+='<div class="mood-box"><div class="mood-title">Настроение дня</div><div class="mood-row">';
+  h+='<button class="add" data-add>+ Добавить в расписание</button>';
+  
+  // Компактный трекер настроения (теперь внизу)
   const currentMood = S.moods[sel];
+  h+='<div class="mood-compact"><span>Настроение:</span><div class="moods">';
   for(let i=0; i<5; i++) {
     h+=`<button class="mood-btn ${currentMood===i?'active':''}" data-mood="${i}" title="${MOOD_TITLES[i]}">${MOODS[i]}</button>`;
   }
   h+='</div></div>';
 
-  // Кнопка "Поделиться неделей"
-  h+='<button class="share-btn" data-share><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Поделиться неделей</button>';
-
-  return h+'<button class="add" data-add>+ Добавить в расписание</button>';
+  return h;
 }
 function vNotes(){
   const L=[...S.notes].sort((a,b)=>b.ts-a.ts);
@@ -287,32 +293,34 @@ function mv(n){
   else{const d=new Date(gy,gm+n,1);gy=d.getFullYear();gm=d.getMonth()}
 }
 
-// ФУНКЦИЯ ГЕНЕРАЦИИ КАРТИНКИ
+// Надежная генерация картинки
 function generateShareImage() {
   const wrap = $('#share-canvas-wrap');
   
-  // Находим начало текущей недели (Понедельник)
   const nowDay = new Date(sel + 'T00:00');
   const dayOfWeek = (nowDay.getDay() + 6) % 7; 
   const startOfWeek = new Date(nowDay);
   startOfWeek.setDate(nowDay.getDate() - dayOfWeek);
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
 
   let html = `<div class="sc-header">
       <h2>Моя неделя</h2>
-      <p>${startOfWeek.getDate()} ${MG[startOfWeek.getMonth()]} — ${new Date(startOfWeek.getTime() + 6*86400000).getDate()} ${MG[startOfWeek.getMonth()]}</p>
+      <p>${startOfWeek.getDate()} ${MG[startOfWeek.getMonth()]} — ${endOfWeek.getDate()} ${MG[endOfWeek.getMonth()]}</p>
   </div>`;
 
   for (let i = 0; i < 7; i++) {
     const d = new Date(startOfWeek);
     d.setDate(startOfWeek.getDate() + i);
     const k = key(d);
-    const mood = S.moods[k];
+    const moodIndex = S.moods[k];
+    const mood = moodIndex !== undefined ? MOODS[moodIndex] : '';
     const events = evOn(k);
     
     html += `<div class="sc-day">
         <div class="sc-date">
             <span>${DOWF[i]} (${d.getDate()}.${p(d.getMonth()+1)})</span>
-            <span class="sc-mood">${mood !== undefined ? MOODS[mood] : ''}</span>
+            <span class="sc-mood">${mood}</span>
         </div>`;
     
     if (events.length) {
@@ -327,19 +335,24 @@ function generateShareImage() {
 
   wrap.innerHTML = html;
 
-  // Ждем немного, чтобы шрифты и эмодзи отрисовались, затем делаем скриншот
+  // Ждем отрисовки
   setTimeout(() => {
     html2canvas(wrap, {
       scale: 2, 
       backgroundColor: "#ffffff",
-      useCORS: true
+      useCORS: true,
+      logging: false
     }).then(canvas => {
       const link = document.createElement('a');
       link.download = `week_${key(startOfWeek)}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
+      wrap.innerHTML = ''; // очищаем после скачивания
+    }).catch(err => {
+      console.error("Ошибка генерации:", err);
+      alert("Не удалось создать картинку. Попробуйте еще раз.");
     });
-  }, 100);
+  }, 150);
 }
 
 document.addEventListener('click',ev=>{
@@ -372,15 +385,14 @@ document.addEventListener('click',ev=>{
   if(D.note){openNote(D.note);return}
   if(D.newnote!==undefined){openNote();return}
   
-  // Обработка кликов по настроению
+  // Клик по настроению
   if(D.mood !== undefined){
     if(S.moods[sel] === +D.mood) {
-      delete S.moods[sel]; // Если нажать на тот же, отменяется
+      delete S.moods[sel]; 
     } else {
       S.moods[sel] = +D.mood;
     }
     save();
-    // Обновляем только кнопки в блоке настроения, чтобы не перерисовывать весь календарь
     const mButtons = document.querySelectorAll('.mood-btn');
     mButtons.forEach((btn, idx) => {
       btn.classList.toggle('active', S.moods[sel] === idx);
@@ -388,7 +400,7 @@ document.addEventListener('click',ev=>{
     return;
   }
 
-  // Обработка кнопки "Поделиться"
+  // Клик по иконке "Поделиться"
   if(D.share !== undefined){
     generateShareImage();
     return;
