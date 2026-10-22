@@ -8,10 +8,12 @@
 <meta name="theme-color" content="#000000">
 <title>Дни</title>
 
-<!-- Подключение дополнительных шрифтов -->
+<!-- Подключение шрифтов для основного текста -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Подключение журнальных шрифтов для заголовков -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Cormorant+Garamond:wght@700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
 
 <style>
 /* ==========================================================================
@@ -25,12 +27,13 @@
   --mut: #8e8e93;
   --line: rgba(60, 60, 67, 0.12);
   --sf: #e5e5ea;
-  --acc: #007aff; /* Синий оставлен только для акцентов (графики, ссылки) */
+  --acc: #007aff;
   --red: #ff3b30;
-  --glass: rgba(255, 255, 255, 0.75);
+  --glass: rgba(255, 255, 255, 0.85);
   --glass-line: rgba(0, 0, 0, 0.05);
   
   --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-head: inherit;
   
   color-scheme: light;
   background-color: var(--bg);
@@ -48,7 +51,7 @@
     --sf: #2c2c2e;
     --acc: #0a84ff;
     --red: #ff453a;
-    --glass: rgba(28, 28, 30, 0.75);
+    --glass: rgba(28, 28, 30, 0.85);
     --glass-line: rgba(255, 255, 255, 0.1);
     color-scheme: dark;
   }
@@ -62,15 +65,20 @@
   --sf: #2c2c2e;
   --acc: #0a84ff;
   --red: #ff453a;
-  --glass: rgba(28, 28, 30, 0.75);
+  --glass: rgba(28, 28, 30, 0.85);
   --glass-line: rgba(255, 255, 255, 0.1);
   color-scheme: dark;
 }
 
-/* Классы для выбора шрифта */
+/* Классы для выбора основного шрифта */
 :root[data-font="sf"] { --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
 :root[data-font="inter"] { --font-main: 'Inter', sans-serif; }
 :root[data-font="manrope"] { --font-main: 'Manrope', sans-serif; }
+
+/* Классы для выбора журнального шрифта заголовков */
+:root[data-font-head="playfair"] { --font-head: 'Playfair Display', serif; }
+:root[data-font-head="cormorant"] { --font-head: 'Cormorant Garamond', serif; }
+:root[data-font-head="cinzel"] { --font-head: 'Cinzel', serif; }
 
 /* ==========================================================================
    2. ГЛОБАЛЬНЫЕ СБРОСЫ
@@ -139,9 +147,12 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
+  /* Плавно уходит под статус-бар */
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
 }
 #ht {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
@@ -182,6 +193,7 @@ body.mo #mb i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 }
 body.mo #sc { opacity: 0.2; pointer-events: auto; }
 
+/* Боковое меню (сливается с шапкой) */
 #dr {
   position: fixed;
   top: 0;
@@ -217,8 +229,12 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   transition: background 0.2s;
   margin-bottom: 4px;
 }
-.mi:active, .mi.on { background: var(--glass-line); }
-.mi.on { font-weight: 600; color: var(--acc); }
+.mi:active { background: var(--glass-line); }
+.mi.on { 
+  background: var(--glass-line); 
+  font-weight: 700; /* Выделение жирным, без синего */
+  color: var(--fg); 
+}
 .sp { flex: 1; }
 
 /* ==========================================================================
@@ -232,27 +248,25 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   padding: 0 4px;
 }
 .mh b {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.8px;
+  font-size: 32px;
+  font-family: var(--font-head); /* Используем журнальный шрифт для месяца */
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 .mh .nav-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
 }
 .mh .nav-group button {
-  font-size: 20px;
-  width: 34px;
-  height: 34px;
-  color: var(--fg); /* Убрали синий цвет у стрелок */
-  background: var(--card-bg);
-  border-radius: 50%;
+  font-size: 24px;
+  color: var(--mut); /* Серые стрелки без фона */
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: color 0.2s;
 }
+.mh .nav-group button:active { color: var(--fg); }
 
 .gd {
   display: grid;
@@ -274,18 +288,19 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .c {
   height: 44px;
   position: relative;
-  border-radius: 50%; /* Круглые дни, как в iOS */
+  border-radius: 12px; /* Квадраты с закруглениями (Задача №1) */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 17px;
   font-weight: 500;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
 }
+.c:active { transform: scale(0.9); }
 .c u {
   display: none;
   position: absolute;
-  bottom: 4px;
+  bottom: 6px;
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -294,8 +309,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .c u.dot { display: block; }
 .c u.fin-dot { background: var(--red); }
 
-/* ИНВЕРСИЯ ЦВЕТОВ (Черный на белом, белый на черном) */
-.c.t { color: var(--red); font-weight: 700; } /* Сегодня - красный (акцент) */
+.c.t { color: var(--red); font-weight: 700; }
 .c.s {
   background: var(--fg); /* Инверсия */
   color: var(--bg);
@@ -303,7 +317,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .c.s u { background: var(--bg); }
-.c.gy { background: var(--fg); color: var(--bg); font-weight: 600; } /* Посещение */
+.c.gy { background: var(--fg); color: var(--bg); font-weight: 600; }
 .c.gn { background: var(--sf); color: var(--mut); text-decoration: line-through; }
 .c.dl-day { border: 2px solid var(--red); color: var(--red); font-weight: bold; }
 
@@ -314,7 +328,11 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   gap: 10px;
   margin: 24px 4px 12px;
 }
-.dh b { font-size: 22px; font-weight: 700; }
+.dh b { 
+  font-size: 22px; 
+  font-weight: 700; 
+  font-family: var(--font-head); 
+}
 .dh span { color: var(--mut); font-weight: 500; }
 .em { color: var(--mut); font-size: 15px; padding: 0 4px; }
 
@@ -369,7 +387,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   width: 100%;
   text-align: left;
   padding: 16px;
-  color: var(--fg); /* Убрали синий */
+  color: var(--fg);
   font-weight: 600;
   font-size: 17px;
   background: var(--card-bg);
@@ -380,7 +398,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .add:active { background: var(--sf); }
 
 /* ==========================================================================
-   5. ЗАМЕТКИ
+   5. ЗАМЕТКИ И ФИНАНСЫ
    ========================================================================== */
 .nt {
   display: block;
@@ -397,9 +415,6 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .nt b { display: block; font-size: 17px; font-weight: 600; margin-bottom: 4px; }
 .nt small { display: block; color: var(--mut); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; }
 
-/* ==========================================================================
-   6. ФИНАНСЫ И СТАТИСТИКА
-   ========================================================================== */
 .st { display: flex; gap: 10px; margin: 6px 0 16px; }
 .st div {
   flex: 1;
@@ -409,17 +424,18 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   box-shadow: 0 4px 16px rgba(0,0,0,0.03);
   text-align: center;
 }
-.st b { display: block; font-size: 28px; font-weight: 800; }
+.st b { display: block; font-size: 28px; font-weight: 800; font-family: var(--font-head); }
 .st span { font-size: 12px; color: var(--mut); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
 .fin-total {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 800;
   margin: 0 0 20px;
   letter-spacing: -1.5px;
   padding: 0 4px;
+  font-family: var(--font-head);
 }
-.fin-total span { font-size: 15px; color: var(--mut); font-weight: 500; letter-spacing: 0; margin-left: 8px; }
+.fin-total span { font-size: 15px; color: var(--mut); font-weight: 500; letter-spacing: 0; margin-left: 8px; font-family: var(--font-main); }
 
 .cat-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
 .fin-item {
@@ -437,7 +453,6 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .fin-item .desc { display: flex; align-items: center; font-weight: 500; font-size: 16px; }
 .fin-item .sum { font-weight: 600; font-size: 16px; }
 
-/* Кнопки статистики */
 .fin-stat-btn, .gym-stat-btn {
   display: flex;
   justify-content: center;
@@ -456,7 +471,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .fin-stat-btn:active, .gym-stat-btn:active { background: var(--sf); }
 
 /* ==========================================================================
-   7. ГРАФИКИ (Пончик и Столбцы)
+   6. ГРАФИКИ
    ========================================================================== */
 .chart-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
 .donut {
@@ -479,7 +494,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
 }
 .donut-inner { position: relative; z-index: 2; text-align: center; }
-.donut-inner b { font-size: 28px; display: block; font-weight: 800; letter-spacing: -0.5px; }
+.donut-inner b { font-size: 32px; display: block; font-weight: 800; letter-spacing: -0.5px; font-family: var(--font-head); }
 .donut-inner span { font-size: 13px; color: var(--mut); font-weight: 500; text-transform: uppercase; }
 
 .legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
@@ -506,13 +521,13 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 8px; height: 100%; justify-content: flex-end; }
 .bar {
   width: 32px;
-  background: var(--fg); /* Столбцы теперь цвета текста (черные/белые) */
+  background: var(--fg);
   border-radius: 8px 8px 0 0;
 }
 .bar-wrap span { font-size: 12px; color: var(--mut); font-weight: 600; }
 
 /* ==========================================================================
-   8. НАСТРОЙКИ И МОДАЛЬНЫЕ ОКНА
+   7. НАСТРОЙКИ И МОДАЛЬНЫЕ ОКНА
    ========================================================================== */
 .sl { color: var(--mut); font-size: 13px; margin: 24px 0 8px 4px; font-weight: 500; text-transform: uppercase; }
 .seg {
@@ -521,6 +536,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   border-radius: 12px;
   padding: 3px;
   margin-bottom: 16px;
+  flex-wrap: wrap; /* Для шрифтов */
 }
 .seg button {
   flex: 1;
@@ -529,6 +545,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   font-size: 14px;
   font-weight: 500;
   transition: background 0.2s, box-shadow 0.2s;
+  min-width: 30%;
 }
 .seg .on {
   background: var(--card-bg);
@@ -539,7 +556,6 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .dl { color: var(--red); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
 .cl { color: var(--fg); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
 
-/* Шторка */
 #ov {
   position: fixed;
   inset: 0;
@@ -569,7 +585,6 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 }
 #sh.full { height: 92%; }
 
-/* Инпуты */
 input[type="text"], input[type="number"], input[type="time"], textarea {
   width: 100%;
   border: 1px solid var(--line);
@@ -596,7 +611,6 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 .row2 { display: flex; gap: 10px; }
 .row2 .pr { flex: 1; }
 
-/* Настроение */
 .mood-compact {
   display: flex;
   justify-content: space-between;
@@ -620,7 +634,6 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 .mood-btn:active { transform: scale(0.9); }
 .mood-btn.active { background: var(--sf); opacity: 1; filter: grayscale(0); transform: scale(1.1); }
 
-/* Дедлайн */
 .deadline-alert {
   background: rgba(255, 59, 48, 0.1);
   color: var(--red);
@@ -635,7 +648,6 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
   gap: 8px;
 }
 
-/* Плавающая кнопка + */
 .fab {
   position: fixed;
   bottom: calc(24px + env(safe-area-inset-bottom, 0px));
@@ -655,7 +667,6 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 .fab:active { transform: scale(0.9); }
 .fab svg { width: 28px; height: 28px; }
 
-/* Цифровая клавиатура (Numpad) */
 .numpad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -673,20 +684,30 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 }
 .numpad button:active { background: var(--sf); }
 .numpad .num-fn { color: var(--fg); font-size: 20px; }
+
+/* Анимация перелистывания месяцев */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.slide-right { animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.slide-left { animation: slideInLeft 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
 </style>
 </head>
 <body>
 
-<!-- Шапка -->
 <header>
   <button id="mb" aria-label="Меню"><i></i><i></i><i></i></button>
   <b id="ht"></b>
 </header>
 
-<!-- Основной контент -->
 <main id="m"></main>
 
-<!-- Оверлей и боковое меню -->
 <div id="sc"></div>
 <aside id="dr">
   <button class="mi" data-t="cal">Календарь</button>
@@ -700,13 +721,9 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
   </button>
 </aside>
 
-<!-- Модальное окно -->
 <div id="ov"><div id="sh"></div></div>
 
 <script>
-/* ==========================================================================
-   1. ИНИЦИАЛИЗАЦИЯ
-   ========================================================================== */
 const $ = s => document.querySelector(s);
 
 let S = {
@@ -720,7 +737,7 @@ let S = {
 
 try { Object.assign(S, JSON.parse(localStorage.getItem('dni') || '{}')); } catch (e) {}
 
-S.set = Object.assign({ theme: 'auto', wk: 'mon', dots: '1', glass: '1', font: 'sf' }, S.set);
+S.set = Object.assign({ theme: 'auto', wk: 'mon', dots: '1', glass: '1', font: 'sf', fontHead: 'default' }, S.set);
 
 const save = () => { try { localStorage.setItem('dni', JSON.stringify(S)); } catch (e) {} };
 
@@ -743,16 +760,13 @@ let fy = cy, fm = cm;
 
 const wd = k => (new Date(k + 'T00:00').getDay() + 6) % 7;
 
-/* ==========================================================================
-   2. ЛОГИКА И РЕНДЕРИНГ
-   ========================================================================== */
 function applySet() {
   const r = document.documentElement;
   if (S.set.theme === 'auto') r.removeAttribute('data-theme');
   else r.dataset.theme = S.set.theme;
   
-  if (S.set.font) r.dataset.font = S.set.font;
-  else r.dataset.font = 'sf';
+  r.dataset.font = S.set.font || 'sf';
+  r.dataset.fontHead = S.set.fontHead || 'default';
 }
 
 function occurs(e, k) {
@@ -923,7 +937,13 @@ function vLook() {
   const o = (k, v, t) => '<button data-set="' + k + '" data-v="' + v + '" class="' + (S.set[k] === v ? 'on' : '') + '">' + t + '</button>';
   return '<button class="bk" data-t="set" style="color:var(--fg);font-weight:600;padding:10px 0">‹ Настройки</button>' +
     '<div class="sl">Тема</div><div class="seg">' + o('theme', 'auto', 'Системная') + o('theme', 'light', 'Светлая') + o('theme', 'dark', 'Тёмная') + '</div>' +
-    '<div class="sl">Шрифт</div><div class="seg">' + o('font', 'sf', 'SF Pro') + o('font', 'inter', 'Inter') + o('font', 'manrope', 'Manrope') + '</div>' +
+    '<div class="sl">Основной шрифт</div><div class="seg">' + o('font', 'sf', 'SF Pro') + o('font', 'inter', 'Inter') + o('font', 'manrope', 'Manrope') + '</div>' +
+    '<div class="sl">Шрифт заголовков</div><div class="seg" style="flex-wrap:wrap;gap:4px">' + 
+      o('fontHead', 'default', 'Системный') + 
+      o('fontHead', 'playfair', 'Playfair') + 
+      o('fontHead', 'cormorant', 'Cormorant') + 
+      o('fontHead', 'cinzel', 'Cinzel') + 
+    '</div>' +
     '<div class="sl">Неделя начинается с</div><div class="seg">' + o('wk', 'mon', 'Пн') + o('wk', 'sun', 'Вс') + '</div>';
 }
 
@@ -943,9 +963,6 @@ function render() {
   document.querySelectorAll('#dr [data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === tab || (tab === 'look' && b.dataset.t === 'set')));
 }
 
-/* ==========================================================================
-   3. МОДАЛЬНЫЕ ОКНА И ДЕЙСТВИЯ
-   ========================================================================== */
 function sh(h, full) {
   $('#sh').innerHTML = h;
   $('#sh').classList.toggle('full', !!full);
@@ -1200,6 +1217,11 @@ function openGymStat() {
 }
 
 function mv(n) {
+  const m = $('#m');
+  m.classList.remove('slide-left', 'slide-right');
+  void m.offsetWidth; // Триггер рефлоу для перезапуска анимации
+  m.classList.add(n > 0 ? 'slide-left' : 'slide-right');
+
   if (tab === 'cal') { const d = new Date(cy, cm + n, 1); cy = d.getFullYear(); cm = d.getMonth(); }
   else if (tab === 'gym') { const d = new Date(gy, gm + n, 1); gy = d.getFullYear(); gm = d.getMonth(); }
   else if (tab === 'fin') { const d = new Date(fy, fm + n, 1); fy = d.getFullYear(); fm = d.getMonth(); }
