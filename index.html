@@ -182,7 +182,12 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
    4. КАЛЕНДАРЬ
    ========================================================================== */
 .mh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 4px; }
-.mh b { font-size: 32px; font-family: var(--font-head); font-weight: 700; letter-spacing: -0.5px; cursor: pointer; }
+.mh .month-title-wrap { display: flex; align-items: center; gap: 12px; }
+.mh b { font-size: 32px; font-family: var(--font-head); font-weight: 700; letter-spacing: -0.5px; }
+.year-toggle-btn {
+  background: var(--card-bg); color: var(--fg); font-size: 13px; font-weight: 600;
+  padding: 6px 12px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 .mh .nav-group { display: flex; align-items: center; gap: 16px; }
 .mh .nav-group button { font-size: 24px; color: var(--mut); display: flex; justify-content: center; align-items: center; transition: color 0.2s; }
 .mh .nav-group button:active { color: var(--fg); }
@@ -215,15 +220,13 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 
 .r { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--card-bg); border-radius: 16px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; overflow: hidden; touch-action: pan-y; }
 .r-inner { display: flex; align-items: center; gap: 14px; width: 100%; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.r.swiped-left .r-inner { transform: translateX(-80px); }
-.r.swiped-right .r-inner { transform: translateX(80px); }
-.r-del-btn, .r-pin-btn {
-  position: absolute; top: 0; bottom: 0; width: 80px; color: #fff; font-weight: 600; display: flex; justify-content: center; align-items: center; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+.r.swiped .r-inner { transform: translateX(-80px); }
+.r-del-btn {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 80px; background: var(--red);
+  color: #fff; font-weight: 600; display: flex; justify-content: center; align-items: center;
+  border-radius: 0 16px 16px 0; transform: translateX(80px); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.r-del-btn { left: 0; background: var(--red); border-radius: 16px 0 0 16px; transform: translateX(-80px); }
-.r-pin-btn { right: 0; background: #ff9f0a; border-radius: 0 16px 16px 0; transform: translateX(80px); }
-.r.swiped-right .r-del-btn { transform: translateX(0); }
-.r.swiped-left .r-pin-btn { transform: translateX(0); }
+.r.swiped .r-del-btn { transform: translateX(0); }
 
 .tx { flex: 1; text-align: left; font-size: 17px; font-weight: 500; }
 .tx small { display: block; color: var(--mut); font-size: 13px; font-weight: 400; margin-top: 2px; }
@@ -243,33 +246,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .mood-icon { font-size: 24px; }
 
 /* ==========================================================================
-   5. ЗАМЕТКИ (В стиле Apple Notes)
-   ========================================================================== */
-.note-card { display: flex; flex-direction: column; padding: 16px; background: var(--card-bg); border-radius: 16px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; overflow: hidden; touch-action: pan-y; }
-.note-card.pinned { background: linear-gradient(to bottom right, rgba(255, 214, 10, 0.05), var(--card-bg)); border: 1px solid rgba(255, 214, 10, 0.3); }
-.note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; width: 100%; }
-.note-title { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.note-date { font-size: 12px; color: var(--mut); }
-.note-preview { font-size: 15px; color: var(--mut); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: left; }
-.note-pin-icon { color: #ffcc00; margin-right: 6px; }
-
-/* Полноэкранный редактор заметок */
-#note-page {
-  position: fixed; inset: 0; background: var(--bg); z-index: 200;
-  display: flex; flex-direction: column;
-  transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-#note-page.open { transform: none; }
-.note-nav {
-  display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;
-  border-bottom: 1px solid var(--line);
-}
-.note-nav button { color: var(--acc); font-size: 17px; font-weight: 600; }
-.note-body { flex: 1; padding: 16px; display: flex; flex-direction: column; overflow-y: auto; }
-
-/* ==========================================================================
-   6. ФИНАНСЫ И ГРАФИКИ
+   5. ФИНАНСЫ И ГРАФИКИ
    ========================================================================== */
 .st { display: flex; gap: 10px; margin: 6px 0 16px; }
 .st div { flex: 1; background: var(--card-bg); border-radius: 20px; padding: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.03); text-align: center; }
@@ -300,7 +277,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .bar-wrap span { font-size: 12px; color: var(--mut); font-weight: 600; }
 
 /* ==========================================================================
-   7. НАСТРОЙКИ, МОДАЛКИ, ГОД
+   6. НАСТРОЙКИ, МОДАЛКИ, ГОД
    ========================================================================== */
 .sl { color: var(--mut); font-size: 13px; margin: 24px 0 8px 4px; font-weight: 500; text-transform: uppercase; }
 .seg { display: flex; background: var(--sf); border-radius: 12px; padding: 3px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -319,6 +296,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 
 input[type="text"], input[type="number"], input[type="time"], textarea { width: 100%; border: 1px solid var(--line); background: var(--card-bg); border-radius: 12px; padding: 14px 16px; font-size: 17px; outline: none; }
 textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17px; resize: none; padding: 0; line-height: 1.6; }
+input[type="number"] { font-size: 24px; font-weight: bold; }
 
 .pr { background: var(--fg); color: var(--bg); border-radius: 16px; padding: 16px; font-weight: 600; font-size: 17px; text-align: center; }
 .row2 { display: flex; gap: 10px; }
@@ -330,16 +308,11 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 .fab:active { transform: scale(0.9); }
 .fab svg { width: 28px; height: 28px; }
 
-.numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-.numpad button { background: var(--card-bg); padding: 16px; font-size: 24px; font-weight: 500; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-.numpad button:active { background: var(--sf); }
-.numpad .num-fn { color: var(--fg); font-size: 20px; }
-
 /* АНИМАЦИИ */
 @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes zoomOut { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1); } }
+@keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes zoomOut { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; transform: scale(1); } }
 .slide-right { animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .slide-left { animation: slideInLeft 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .zoom-in { animation: zoomIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -356,30 +329,40 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 .month-mini .mini-grid span { display: flex; justify-content: center; align-items: center; width: 16px; height: 16px; margin: 0 auto; }
 .month-mini .mini-grid span.cur { color: var(--red); font-weight: 700; }
 
-/* ТРЕКЕР НАСТРОЕНИЯ (ЭКРАН) */
+/* ТРЕКЕР НАСТРОЕНИЯ (МНОГОСЛОЙНЫЙ) */
 #mood-page {
   position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column;
   transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  background: #e5dff5; /* Мягкий фон */
+  background: var(--bg); /* Системный фон */
   padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 #mood-page.open { transform: none; }
 .mood-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px; font-weight: 600; font-size: 17px; }
-.mood-nav button { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.5); display: flex; justify-content: center; align-items: center; font-size: 20px; }
+.mood-nav button { width: 40px; height: 40px; border-radius: 50%; background: var(--sf); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--fg); }
 .mood-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
-.mood-title { font-size: 24px; font-weight: 700; margin-bottom: 40px; }
-.mood-orb {
-  width: 200px; height: 200px; border-radius: 50%; margin-bottom: 40px; position: relative;
-  transition: background 0.3s ease, transform 0.3s ease, border-radius 0.3s ease;
-  display: flex; justify-content: center; align-items: center;
+.mood-title { font-size: 24px; font-weight: 700; margin-bottom: 40px; line-height: 1.3; }
+
+/* Контейнер для 3D-форм */
+.mood-orb-container {
+  position: relative; width: 280px; height: 280px; display: flex; justify-content: center; align-items: center; margin-bottom: 40px;
 }
-.mood-orb::after { content: ''; position: absolute; inset: 20px; border-radius: 50%; background: rgba(255,255,255,0.2); filter: blur(10px); }
+.m-layer {
+  position: absolute; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  mix-blend-mode: normal;
+}
+/* Слой 1 (Задний, самый большой, размытый) */
+.m-layer.l1 { width: 100%; height: 100%; opacity: 0.3; filter: blur(20px); }
+/* Слой 2 (Средний, стеклянный) */
+.m-layer.l2 { width: 75%; height: 75%; opacity: 0.6; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 0 30px rgba(255,255,255,0.2); }
+/* Слой 3 (Передний, плотный) */
+.m-layer.l3 { width: 45%; height: 45%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
 .mood-status { font-size: 22px; font-weight: 700; margin-bottom: 30px; }
 .mood-slider-wrap { width: 100%; max-width: 300px; }
-.mood-slider { width: 100%; -webkit-appearance: none; height: 40px; border-radius: 20px; background: rgba(255,255,255,0.4); outline: none; margin-bottom: 8px; }
-.mood-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 36px; height: 36px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
-.mood-labels { display: flex; justify-content: space-between; font-size: 12px; color: rgba(0,0,0,0.5); font-weight: 600; }
-.mood-save-btn { margin: 20px; padding: 16px; border-radius: 20px; background: #3b2d6b; color: #fff; font-weight: 600; font-size: 18px; text-align: center; }
+.mood-slider { width: 100%; -webkit-appearance: none; height: 40px; border-radius: 20px; background: var(--sf); outline: none; margin-bottom: 8px; }
+.mood-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 36px; height: 36px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; border: 1px solid var(--line); }
+.mood-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--mut); font-weight: 600; }
+.mood-save-btn { margin: 20px; padding: 16px; border-radius: 20px; background: var(--fg); color: var(--bg); font-weight: 600; font-size: 18px; text-align: center; }
 </style>
 </head>
 <body>
@@ -394,7 +377,6 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 <div id="sc"></div>
 <aside id="dr">
   <button class="mi" data-t="cal">Календарь</button>
-  <button class="mi" data-t="notes">Заметки</button>
   <button class="mi" data-t="gym">Посещаемость</button>
   <button class="mi" data-t="fin">Расходы</button>
   <span class="sp"></span>
@@ -406,23 +388,6 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 
 <div id="ov"><div id="sh"></div></div>
 
-<!-- Полноэкранный редактор заметок -->
-<div id="note-page">
-  <div class="note-nav">
-    <button id="note-back">‹ Заметки</button>
-    <button id="note-done" style="font-weight:700">Готово</button>
-  </div>
-  <div class="format-bar" style="padding: 0 16px;">
-    <button id="fmt-bold" style="font-weight:800">B</button>
-    <button id="fmt-italic" style="font-style:italic">I</button>
-    <button id="fmt-underline" style="text-decoration:underline">U</button>
-    <button id="fmt-check">☑ Чек-лист</button>
-  </div>
-  <div class="note-body">
-    <textarea id="note-textarea" placeholder="Начните печатать..."></textarea>
-  </div>
-</div>
-
 <!-- Экран настроения -->
 <div id="mood-page">
   <div class="mood-nav">
@@ -432,7 +397,13 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
   </div>
   <div class="mood-content">
     <div class="mood-title">Как бы Вы сейчас описали свои ощущения?</div>
-    <div class="mood-orb" id="mood-orb"></div>
+    
+    <div class="mood-orb-container">
+      <div class="m-layer l1" id="ml1"></div>
+      <div class="m-layer l2" id="ml2"></div>
+      <div class="m-layer l3" id="ml3"></div>
+    </div>
+
     <div class="mood-status" id="mood-status-text">Нейтральные</div>
     <div class="mood-slider-wrap">
       <input type="range" min="0" max="100" value="50" class="mood-slider" id="mood-slider">
@@ -446,7 +417,7 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 const $ = s => document.querySelector(s);
 
 let S = {
-  ev: [], done: {}, notes: [], gym: {}, moods: {}, fin: [],
+  ev: [], done: {}, gym: {}, moods: {}, fin: [],
   cats: [
     { id: 'c1', name: 'Еда', color: '#ff9f0a' },      
     { id: 'c2', name: 'Транспорт', color: '#0a84ff' },
@@ -507,9 +478,12 @@ function repLabel(e) {
   return a.join(', ');
 }
 
-function head(y, m, showYearBtn = true) {
+function head(y, m) {
   return `<div class="mh">
-    <b ${showYearBtn ? `data-toggle-year style="cursor:pointer"` : ''}>${MON[m]} ${y}</b>
+    <div class="month-title-wrap">
+      <b>${MON[m]} ${y}</b>
+      <button class="year-toggle-btn" data-toggle-year>Год</button>
+    </div>
     <div class="nav-group">
       <button data-nav="-1">‹</button>
       <button data-nav="1">›</button>
@@ -572,7 +546,7 @@ function dayList() {
   
   h += '<button class="add" data-add>+ Добавить в расписание</button>';
   
-  // Кнопка настроения (в стиле Apple Health)
+  // Кнопка настроения
   const currentMood = S.moods[sel];
   const moodEmoji = currentMood !== undefined ? getMoodEmoji(currentMood) : '😐';
   h += `<button class="mood-btn-wrap" data-open-mood>
@@ -607,7 +581,13 @@ function getMoodText(val) {
 }
 
 function vYear() {
-  let h = `<div class="mh"><b data-toggle-year style="cursor:pointer">${yearStart}</b><div class="nav-group"><button data-yearnav="-1">‹</button><button data-yearnav="1">›</button></div></div>`;
+  let h = `<div class="mh" style="margin-bottom:24px;">
+    <button class="year-toggle-btn" data-toggle-year style="background:var(--red);color:#fff;">‹ Назад</button>
+    <div class="nav-group">
+      <button data-yearnav="-1">‹</button>
+      <button data-yearnav="1">›</button>
+    </div>
+  </div>`;
   h += `<div class="year-view" id="year-list">`;
   
   for (let y = yearStart - 1; y <= yearStart + 1; y++) {
@@ -634,41 +614,6 @@ function vYear() {
   
   h += `</div>`;
   return h;
-}
-
-function vNotes() {
-  const L = [...S.notes].sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
-    return b.ts - a.ts;
-  });
-
-  return (L.length ? L.map(n => {
-    const lines = n.text.split('\n');
-    const title = lines[0] || 'Без названия';
-    const preview = lines.slice(1).join(' ').substring(0, 100);
-    const date = new Date(n.ts).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-    
-    return `
-    <div class="note-card ${n.pinned ? 'pinned' : ''}" data-swipe-note="true" data-id="${n.id}">
-      <div class="r-inner" style="flex-direction:column;align-items:flex-start;gap:4px;width:100%">
-        <button style="width:100%;text-align:left" data-open-note="${n.id}">
-          <div class="note-header">
-            <div class="note-title">
-              ${n.pinned ? '<span class="note-pin-icon">📌</span>' : ''}${esc(title)}
-            </div>
-            <div class="note-date">${date}</div>
-          </div>
-          <div class="note-preview">${esc(preview || 'Нет дополнительного текста...')}</div>
-        </button>
-      </div>
-      <button class="r-del-btn" data-del-nt="${n.id}">Удалить</button>
-      <button class="r-pin-btn" data-pin-nt="${n.id}">${n.pinned ? 'Открепить' : 'Закрепить'}</button>
-    </div>`;
-  }).join('') : '<p class="em">Заметок пока нет.</p>') + 
-  `<button class="fab" data-newnote style="width:50px;height:50px;border-radius:50%;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-  </button>`;
 }
 
 function vGym() {
@@ -744,19 +689,13 @@ function vLook() {
 function render() {
   const m = $('#m');
   if (tab === 'cal') m.innerHTML = vCal();
-  else if (tab === 'notes') m.innerHTML = vNotes();
   else if (tab === 'gym') m.innerHTML = vGym();
   else if (tab === 'fin') m.innerHTML = vFin();
   else if (tab === 'look') m.innerHTML = vLook();
   else m.innerHTML = vSet();
 
   $('#ht').textContent = ({
-    cal: yearMode ? 'Календарь' : 'Календарь', 
-    notes: 'Заметки', 
-    gym: 'Посещаемость', 
-    fin: 'Расходы', 
-    set: 'Настройки', 
-    look: 'Оформление'
+    cal: 'Календарь', gym: 'Посещаемость', fin: 'Расходы', set: 'Настройки', look: 'Оформление'
   })[tab];
   
   document.querySelectorAll('#dr [data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === tab || (tab === 'look' && b.dataset.t === 'set')));
@@ -778,55 +717,7 @@ function cl() {
   render();
 }
 
-/* РЕДАКТОР ЗАМЕТОК (ПОЛНОЭКРАННЫЙ) */
-let currentNote = null;
-
-function openNotePage(id) {
-  let n = id && S.notes.find(x => x.id === id);
-  if (!n) { n = { id: 'n' + Date.now(), text: '', ts: Date.now(), pinned: false }; S.notes.push(n); }
-  currentNote = n;
-  
-  $('#note-textarea').value = n.text;
-  $('#note-page').classList.add('open');
-  
-  setTimeout(() => $('#note-textarea').focus(), 300);
-}
-
-function closeNotePage() {
-  $('#note-page').classList.remove('open');
-  currentNote = null;
-  render();
-}
-
-$('#note-back').onclick = closeNotePage;
-$('#note-done').onclick = closeNotePage;
-
-$('#note-textarea').addEventListener('input', (e) => {
-  if (currentNote) {
-    currentNote.text = e.target.value;
-    currentNote.ts = Date.now();
-    save();
-  }
-});
-
-// Форматирование (простая вставка)
-const insertText = (before, after = '') => {
-  const ta = $('#note-textarea');
-  const start = ta.selectionStart;
-  const end = ta.selectionEnd;
-  const text = ta.value;
-  const selected = text.substring(start, end);
-  ta.value = text.substring(0, start) + before + selected + after + text.substring(end);
-  if (currentNote) { currentNote.text = ta.value; save(); }
-  ta.focus();
-  ta.setSelectionRange(start + before.length, end + before.length);
-};
-$('#fmt-bold').onclick = () => insertText('<b>', '</b>');
-$('#fmt-italic').onclick = () => insertText('<i>', '</i>');
-$('#fmt-underline').onclick = () => insertText('<u>', '</u>');
-$('#fmt-check').onclick = () => insertText('\n☐ ');
-
-/* ТРЕКЕР НАСТРОЕНИЯ */
+/* ТРЕКЕР НАСТРОЕНИЯ (МНОГОСЛОЙНЫЙ) */
 let currentMoodValue = 50;
 
 function openMoodPage() {
@@ -838,35 +729,57 @@ function openMoodPage() {
 }
 
 function updateMoodUI(val) {
-  const orb = $('#mood-orb');
+  const l1 = $('#ml1');
+  const l2 = $('#ml2');
+  const l3 = $('#ml3');
   const text = $('#mood-status-text');
   
-  let color1, color2, blur;
+  let colorMain, colorLight;
   
+  // Выбор цвета
   if (val <= 20) {
-    color1 = '#5e4b8b'; color2 = '#3b2d6b';
+    colorMain = '#7b61ff'; colorLight = '#a395ff';
     text.textContent = 'Очень неприятные';
-    orb.style.borderRadius = '40% 60% 70% 30% / 40% 50% 60% 50%';
   } else if (val <= 40) {
-    color1 = '#7c73e6'; color2 = '#5e4b8b';
+    colorMain = '#5e8fff'; colorLight = '#90b3ff';
     text.textContent = 'Неприятные';
-    orb.style.borderRadius = '50% 50% 60% 40% / 50% 60% 40% 50%';
   } else if (val <= 60) {
-    color1 = '#a1c4fd'; color2 = '#c2e9fb';
+    colorMain = '#00c6ff'; colorLight = '#70d8ff';
     text.textContent = 'Нейтральные';
-    orb.style.borderRadius = '50%';
   } else if (val <= 80) {
-    color1 = '#ffecd2'; color2 = '#fcb69f';
+    colorMain = '#ff9f0a'; colorLight = '#ffc067';
     text.textContent = 'Приятные';
-    orb.style.borderRadius = '60% 40% 50% 50% / 40% 60% 50% 50%';
   } else {
-    color1 = '#ff9a9e'; color2 = '#fecfef';
+    colorMain = '#ff453a'; colorLight = '#ff8c85';
     text.textContent = 'Очень приятные';
-    orb.style.borderRadius = '50% 50% 30% 70% / 50% 50% 70% 30%';
   }
   
-  orb.style.background = `radial-gradient(circle at 30% 30%, ${color1}, ${color2})`;
-  orb.style.boxShadow = `0 10px 40px ${color1}80`;
+  // Выбор формы (морфинг)
+  let br = '';
+  let rot = '';
+  if (val <= 40) {
+    // Острые формы
+    br = '20% 80% 30% 70% / 20% 30% 70% 80%';
+    rot = '45deg';
+  } else if (val <= 60) {
+    // Круглые/волны
+    br = '50%';
+    rot = '0deg';
+  } else {
+    // Мягкие лепестки
+    br = '60% 40% 60% 40% / 40% 60% 40% 60%';
+    rot = '-30deg';
+  }
+
+  // Применяем стили к слоям
+  [l1, l2, l3].forEach((layer, index) => {
+    layer.style.background = index === 2 ? colorMain : colorLight;
+    layer.style.borderRadius = br;
+    // Разный поворот для каждого слоя, чтобы создать объем
+    if (index === 0) layer.style.transform = `rotate(${rot}) scale(1)`;
+    if (index === 1) layer.style.transform = `rotate(${parseInt(rot)-15}deg) scale(1)`;
+    if (index === 2) layer.style.transform = `rotate(${parseInt(rot)+15}deg) scale(1)`;
+  });
 }
 
 $('#mood-slider').addEventListener('input', (e) => {
@@ -882,50 +795,27 @@ $('#mood-save').onclick = () => {
   render();
 };
 
-/* ДОБАВЛЕНИЕ РАСХОДА */
+/* ДОБАВЛЕНИЕ РАСХОДА (С РУЧНЫМ ВВОДОМ) */
 function openAddFin() {
   let catHtml = S.cats.map(c => `<button class="cat-btn" data-cat="${c.id}" style="background:${c.color}15;color:${c.color};border:1px solid ${c.color}30;padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600;margin:0 8px 8px 0">${esc(c.name)}</button>`).join('');
   catHtml += `<button id="manage-cats" style="background:var(--card-bg);color:var(--fg);border:1px dashed var(--line);padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600">Управление</button>`;
   
   sh(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <h3 style="margin:0;font-size:20px;font-weight:700">Новый расход</h3>
-        <div id="fin-display" style="font-size:28px;font-weight:800;color:var(--fg)">0 ₽</div>
       </div>
       
-      <input type="hidden" id="fin-sum" value="">
+      <input type="number" id="fin-sum" placeholder="0 ₽" style="font-size:32px; padding: 16px; margin-bottom: 8px;" autofocus>
       
       <div class="sl" style="margin:10px 0 6px">Категория</div>
       <div id="cat-list" style="display:flex;flex-wrap:wrap;margin-bottom:16px">${catHtml}</div>
-      
-      <div class="numpad" id="numpad">
-        <button data-num="1">1</button><button data-num="2">2</button><button data-num="3">3</button>
-        <button data-num="4">4</button><button data-num="5">5</button><button data-num="6">6</button>
-        <button data-num="7">7</button><button data-num="8">8</button><button data-num="9">9</button>
-        <button data-num="." class="num-fn">,</button><button data-num="0">0</button><button data-fn="del" class="num-fn">⌫</button>
-      </div>
       
       <button class="pr" id="save-fin" style="margin-top:16px">Сохранить</button>
       <button class="cl" id="x">Отмена</button>`);
       
   let selectedCat = S.cats.length ? S.cats[0].id : null;
-  let currentSum = "";
-  const display = $('#fin-display');
-  const inputSum = $('#fin-sum');
   
   const firstBtn = document.querySelector('#cat-list [data-cat]');
   if (firstBtn) firstBtn.style.boxShadow = '0 0 0 2px var(--fg)';
-  
-  $('#numpad').onclick = (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    if (btn.dataset.fn === 'del') currentSum = currentSum.slice(0, -1);
-    else if (btn.dataset.num) {
-      if (btn.dataset.num === '.' && currentSum.includes('.')) return;
-      if (currentSum.length < 9) currentSum += btn.dataset.num;
-    }
-    inputSum.value = currentSum;
-    display.textContent = currentSum ? currentSum + ' ₽' : '0 ₽';
-  };
   
   $('#cat-list').onclick = (e) => {
     const btn = e.target.closest('[data-cat]');
@@ -981,8 +871,8 @@ function openAddFin() {
   
   $('#x').onclick = cl;
   $('#save-fin').onclick = () => {
-    const sum = parseFloat(inputSum.value);
-    if (!sum || sum <= 0) { display.style.color = 'var(--red)'; setTimeout(() => display.style.color = 'var(--fg)', 500); return; }
+    const sum = parseFloat($('#fin-sum').value);
+    if (!sum || sum <= 0) { $('#fin-sum').focus(); return; }
     if (!selectedCat) { alert('Выберите категорию'); return; }
     S.fin.push({ id: 'f' + Date.now(), date: sel, amount: sum, catId: selectedCat });
     save(); cl();
@@ -1102,7 +992,7 @@ document.addEventListener('click', ev => {
     return;
   }
 
-  if (!b || b.closest('#sh') || b.closest('#note-page') || b.closest('#mood-page')) return;
+  if (!b || b.closest('#sh') || b.closest('#mood-page')) return;
   
   const D = b.dataset;
   
@@ -1118,7 +1008,7 @@ document.addEventListener('click', ev => {
   if (D.reset !== undefined) {
     if (b.dataset.c) { 
       if(confirm('Вы уверены, что хотите стереть ВСЕ данные?')) {
-        S = { ev: [], done: {}, notes: [], gym: {}, moods: {}, fin: [], cats: [{ id: 'c1', name: 'Еда', color: '#ff9f0a' }, { id: 'c2', name: 'Транспорт', color: '#0a84ff' }], set: S.set }; 
+        S = { ev: [], done: {}, gym: {}, moods: {}, fin: [], cats: [{ id: 'c1', name: 'Еда', color: '#ff9f0a' }, { id: 'c2', name: 'Транспорт', color: '#0a84ff' }], set: S.set }; 
         save(); render(); 
       }
     } else { 
@@ -1161,8 +1051,6 @@ document.addEventListener('click', ev => {
   if (D.finstat !== undefined) { openFinStat(); return; }
   if (D.gymstat !== undefined) { openGymStat(); return; }
   
-  if (D.openNote) { openNotePage(D.openNote); return; }
-  if (D.newnote !== undefined) { openNotePage(); return; }
   if (D.openMood !== undefined) { openMoodPage(); return; }
   
   if (D.gym) {
@@ -1190,15 +1078,13 @@ document.addEventListener('click', ev => {
 let startX = 0, startY = 0, currentSwipeEl = null;
 
 document.addEventListener('touchstart', e => {
-  if ($('#ov').classList.contains('o') || $('#note-page').classList.contains('open') || $('#mood-page').classList.contains('open')) return;
+  if ($('#ov').classList.contains('o') || $('#mood-page').classList.contains('open')) return;
   
-  const row = e.target.closest('.r, .fin-item, .note-card');
+  const row = e.target.closest('.r, .fin-item');
   const calGrid = e.target.closest('.gd');
   
   if (row) {
-    if (currentSwipeEl && currentSwipeEl !== row) {
-      currentSwipeEl.classList.remove('swiped-left', 'swiped-right');
-    }
+    if (currentSwipeEl && currentSwipeEl !== row) currentSwipeEl.classList.remove('swiped');
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     currentSwipeEl = row;
@@ -1225,8 +1111,7 @@ document.addEventListener('touchmove', e => {
     if (e.cancelable) e.preventDefault();
     const inner = currentSwipeEl.querySelector('.r-inner');
     if (inner) {
-      // Позволяем свайп в обе стороны
-      const move = Math.max(-80, Math.min(80, dx));
+      const move = Math.max(-80, Math.min(0, dx));
       inner.style.transform = `translateX(${move}px)`;
     }
   }
@@ -1248,37 +1133,25 @@ document.addEventListener('touchend', e => {
   }
 
   const inner = currentSwipeEl.querySelector('.r-inner');
-  currentSwipeEl.classList.remove('swiped-left', 'swiped-right');
   
   if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-    if (dx < 0) currentSwipeEl.classList.add('swiped-left');
-    else currentSwipeEl.classList.add('swiped-right');
-    if (inner) inner.style.transform = ''; 
+    if (dx < 0) {
+      currentSwipeEl.classList.add('swiped');
+      if (inner) inner.style.transform = ''; 
+    } else {
+      currentSwipeEl.classList.remove('swiped');
+      if (inner) inner.style.transform = '';
+    }
   } else {
     if (inner) inner.style.transform = '';
+    if (!currentSwipeEl.classList.contains('swiped')) currentSwipeEl = null;
   }
-  
-  setTimeout(() => { 
-    if (currentSwipeEl) {
-      currentSwipeEl.classList.remove('swiped-left', 'swiped-right');
-      currentSwipeEl = null; 
-    }
-  }, 3000); // Автоматически закрываем свайп через 3 секунды, если не нажали
+  setTimeout(() => { if (currentSwipeEl && currentSwipeEl.classList.contains('swiped')) currentSwipeEl = null; }, 3000);
 }, { passive: true });
 
 document.addEventListener('click', e => {
   const delEv = e.target.closest('[data-del-ev]');
   if (delEv) { S.ev = S.ev.filter(x => x.id !== delEv.dataset.delEv); save(); render(); return; }
-  
-  const delNt = e.target.closest('[data-del-nt]');
-  if (delNt) { S.notes = S.notes.filter(x => x.id !== delNt.dataset.delNt); save(); render(); return; }
-  
-  const pinNt = e.target.closest('[data-pin-nt]');
-  if (pinNt) { 
-    const n = S.notes.find(x => x.id === pinNt.dataset.pinNt);
-    if(n) { n.pinned = !n.pinned; save(); render(); }
-    return; 
-  }
   
   const delFin = e.target.closest('[data-del-fin]');
   if (delFin) { S.fin = S.fin.filter(x => x.id !== delFin.dataset.delFin); save(); render(); return; }
