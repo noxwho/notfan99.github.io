@@ -110,7 +110,6 @@ textarea{flex:1;min-height:40vh;width:100%;border:0;background:none;font-size:17
 <aside id="dr">
   <button class="mi" data-t="cal">Календарь</button>
   <button class="mi" data-t="notes">Заметки</button>
-  <button class="mi" data-t="done">Выполнено</button>
   <button class="mi" data-t="gym">Посещаемость</button>
   <span class="sp"></span>
   <button class="mi" data-t="set"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-width="3" stroke-dasharray="3.5 3.5"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2"/></svg>Настройки</button>
@@ -168,8 +167,8 @@ function dayList(){
   h+='<div class="dh"><b>'+d.getDate()+' '+MG[d.getMonth()]+'</b><span>'+DOWF[wd(sel)]+'</span></div>';
   const L=evOn(sel);
   h+=L.length?L.map(e=>{
-    const dn=!!S.done[e.id+'|'+sel],lb=repLabel(e);
-    return '<div class="r"><button class="ck'+(dn?' on':'')+'" data-ck="'+e.id+'" aria-label="Выполнено"></button><button class="tx'+(dn?' dn':'')+'" data-ed="'+e.id+'">'+esc(e.title)+(lb?'<small>'+lb+'</small>':'')+'</button></div>';
+    const lb=repLabel(e);
+    return '<div class="r"><button class="tx" data-ed="'+e.id+'">'+esc(e.title)+(lb?'<small>'+lb+'</small>':'')+'</button></div>';
   }).join(''):'<p class="em">На этот день ничего нет.</p>';
   return h+'<button class="add" data-add>+ Добавить в расписание</button>';
 }
@@ -179,17 +178,6 @@ function vNotes(){
     const ls=n.text.trim().split('\n');
     return '<button class="nt" data-note="'+n.id+'"><b>'+esc(ls[0])+'</b><small>'+esc(ls.slice(1).join(' ').slice(0,90))+'</small></button>';
   }).join(''):'<p class="em">Заметок пока нет.</p>')+'<button class="add" data-newnote>+ Новая заметка</button>';
-}
-function vDone(){
-  const L=Object.entries(S.done).map(([id,v])=>({id,...v})).sort((a,b)=>b.k.localeCompare(a.k)||b.ts-a.ts);
-  let h='';
-  if(!L.length)return h+'<p class="em">Отмечай задачи в календаре, и они появятся здесь.</p>';
-  let last='';
-  for(const x of L){
-    if(x.k!==last){last=x.k;const d=new Date(x.k+'T00:00');h+='<div class="dg">'+d.getDate()+' '+MG[d.getMonth()]+' '+d.getFullYear()+'</div>';}
-    h+='<div class="r"><button class="ck on" data-undo="'+esc(x.id)+'" aria-label="Вернуть"></button><span class="tx">'+esc(x.t)+'</span></div>';
-  }
-  return h;
 }
 function vGym(){
   const t=key(new Date());let w=0,s=0;
@@ -209,8 +197,8 @@ function vLook(){
   ;
 }
 function render(){
-  $('#m').innerHTML=tab==='cal'?vCal():tab==='notes'?vNotes():tab==='done'?vDone():tab==='gym'?vGym():tab==='look'?vLook():vSet();
-  $('#ht').textContent=({cal:'Календарь',notes:'Заметки',done:'Выполнено',gym:'Посещаемость',set:'Настройки',look:'Оформление'})[tab];
+  $('#m').innerHTML=tab==='cal'?vCal():tab==='notes'?vNotes():tab==='gym'?vGym():tab==='look'?vLook():vSet();
+  $('#ht').textContent=({cal:'Календарь',notes:'Заметки',gym:'Посещаемость',set:'Настройки',look:'Оформление'})[tab];
   document.querySelectorAll('#dr [data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===tab||(tab==='look'&&b.dataset.t==='set')));
 }
 function sh(h,full){$('#sh').innerHTML=h;$('#sh').classList.toggle('full',!!full);$('#ov').classList.add('o')}
