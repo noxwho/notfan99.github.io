@@ -8,6 +8,11 @@
 <meta name="theme-color" content="#000000">
 <title>Дни</title>
 
+<!-- Подключение дополнительных шрифтов -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 /* ==========================================================================
    1. БАЗОВЫЕ ПЕРЕМЕННЫЕ И ЦВЕТА (iOS Style)
@@ -20,10 +25,12 @@
   --mut: #8e8e93;
   --line: rgba(60, 60, 67, 0.12);
   --sf: #e5e5ea;
-  --acc: #007aff;
+  --acc: #007aff; /* Синий оставлен только для акцентов (графики, ссылки) */
   --red: #ff3b30;
   --glass: rgba(255, 255, 255, 0.75);
   --glass-line: rgba(0, 0, 0, 0.05);
+  
+  --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
   color-scheme: light;
   background-color: var(--bg);
@@ -60,13 +67,17 @@
   color-scheme: dark;
 }
 
+/* Классы для выбора шрифта */
+:root[data-font="sf"] { --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+:root[data-font="inter"] { --font-main: 'Inter', sans-serif; }
+:root[data-font="manrope"] { --font-main: 'Manrope', sans-serif; }
+
 /* ==========================================================================
    2. ГЛОБАЛЬНЫЕ СБРОСЫ
    ========================================================================== */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
-  /* Отключаем выделение текста для iOS-ощущения */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -81,14 +92,18 @@ body {
   flex-direction: column;
   background: var(--bg);
   color: var(--fg);
-  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-main);
+  font-size: 16px;
+  line-height: 1.4;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   overflow-x: hidden;
+  transition: font-family 0.2s ease;
 }
 button, input, textarea {
   font: inherit;
   color: inherit;
+  font-family: var(--font-main);
 }
 button {
   background: none;
@@ -103,21 +118,20 @@ input, textarea {
 main {
   flex: 1;
   overflow-y: auto;
-  padding: 18px 18px 100px; /* Отступ снизу для плавающих кнопок */
+  padding: 16px 16px 100px;
   max-width: 560px;
   width: 100%;
   margin: 0 auto;
-  transition: background 0.3s;
 }
 
 /* ==========================================================================
-   3. ШАПКА И МЕНЮ (Glassmorphism)
+   3. ШАПКА И БОКОВОЕ МЕНЮ
    ========================================================================== */
 header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
+  gap: 12px;
+  padding: 12px 16px;
   background: var(--glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -127,13 +141,13 @@ header {
   z-index: 50;
 }
 #ht {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.5px;
 }
 #mb {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   position: relative;
   border-radius: 50%;
   background: var(--glass-line);
@@ -143,21 +157,20 @@ header {
 }
 #mb i {
   position: absolute;
-  left: 11px;
+  left: 9px;
   width: 18px;
   height: 2px;
   border-radius: 2px;
   background: var(--fg);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
 }
-#mb i:nth-child(1) { top: 14px; }
-#mb i:nth-child(2) { top: 19px; }
-#mb i:nth-child(3) { top: 24px; }
+#mb i:nth-child(1) { top: 12px; }
+#mb i:nth-child(2) { top: 17px; }
+#mb i:nth-child(3) { top: 22px; }
 body.mo #mb i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
 body.mo #mb i:nth-child(2) { opacity: 0; }
 body.mo #mb i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
-/* Затемнение фона (слабое для iOS) */
 #sc {
   position: fixed;
   inset: 0;
@@ -169,7 +182,6 @@ body.mo #mb i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 }
 body.mo #sc { opacity: 0.2; pointer-events: auto; }
 
-/* Боковое меню */
 #dr {
   position: fixed;
   top: 0;
@@ -205,9 +217,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   transition: background 0.2s;
   margin-bottom: 4px;
 }
-.mi:active, .mi.on {
-  background: var(--glass-line);
-}
+.mi:active, .mi.on { background: var(--glass-line); }
 .mi.on { font-weight: 600; color: var(--acc); }
 .sp { flex: 1; }
 
@@ -222,25 +232,26 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   padding: 0 4px;
 }
 .mh b {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
 }
 .mh .nav-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 .mh .nav-group button {
-  font-size: 22px;
-  width: 32px;
-  height: 32px;
-  color: var(--acc);
-  background: var(--glass-line);
+  font-size: 20px;
+  width: 34px;
+  height: 34px;
+  color: var(--fg); /* Убрали синий цвет у стрелок */
+  background: var(--card-bg);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
 .gd {
@@ -249,9 +260,9 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   gap: 4px;
   text-align: center;
   background: var(--card-bg);
-  padding: 12px 8px;
-  border-radius: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  padding: 16px 12px;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
 }
 .dw {
   font-size: 12px;
@@ -261,37 +272,38 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   text-transform: uppercase;
 }
 .c {
-  height: 46px;
+  height: 44px;
   position: relative;
-  border-radius: 14px;
+  border-radius: 50%; /* Круглые дни, как в iOS */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 17px;
   font-weight: 500;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 .c u {
   display: none;
   position: absolute;
-  bottom: 6px;
+  bottom: 4px;
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--acc);
+  background: var(--mut);
 }
 .c u.dot { display: block; }
 .c u.fin-dot { background: var(--red); }
 
-.c.t { color: var(--acc); font-weight: 700; }
+/* ИНВЕРСИЯ ЦВЕТОВ (Черный на белом, белый на черном) */
+.c.t { color: var(--red); font-weight: 700; } /* Сегодня - красный (акцент) */
 .c.s {
-  background: var(--fg);
+  background: var(--fg); /* Инверсия */
   color: var(--bg);
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .c.s u { background: var(--bg); }
-.c.gy { background: var(--acc); color: #fff; font-weight: 600; }
+.c.gy { background: var(--fg); color: var(--bg); font-weight: 600; } /* Посещение */
 .c.gn { background: var(--sf); color: var(--mut); text-decoration: line-through; }
 .c.dl-day { border: 2px solid var(--red); color: var(--red); font-weight: bold; }
 
@@ -315,8 +327,6 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   border-radius: 16px;
   margin-bottom: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  transition: transform 0.2s, background 0.2s;
-  /* Для свайпов */
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
@@ -359,12 +369,13 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   width: 100%;
   text-align: left;
   padding: 16px;
-  color: var(--acc);
+  color: var(--fg); /* Убрали синий */
   font-weight: 600;
   font-size: 17px;
   background: var(--card-bg);
   border-radius: 16px;
   margin-top: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 .add:active { background: var(--sf); }
 
@@ -393,19 +404,19 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .st div {
   flex: 1;
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
   text-align: center;
 }
-.st b { display: block; font-size: 24px; font-weight: 700; }
-.st span { font-size: 12px; color: var(--mut); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+.st b { display: block; font-size: 28px; font-weight: 800; }
+.st span { font-size: 12px; color: var(--mut); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
 .fin-total {
-  font-size: 34px;
+  font-size: 36px;
   font-weight: 800;
   margin: 0 0 20px;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
   padding: 0 4px;
 }
 .fin-total span { font-size: 15px; color: var(--mut); font-weight: 500; letter-spacing: 0; margin-left: 8px; }
@@ -415,7 +426,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
+  padding: 16px;
   background: var(--card-bg);
   border-radius: 16px;
   margin-bottom: 8px;
@@ -434,7 +445,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   width: 100%;
   padding: 16px;
   margin-top: 16px;
-  color: var(--acc);
+  color: var(--fg);
   font-weight: 600;
   font-size: 16px;
   border-radius: 16px;
@@ -445,7 +456,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .fin-stat-btn:active, .gym-stat-btn:active { background: var(--sf); }
 
 /* ==========================================================================
-   7. ГРАФИКИ (Пончик и Столбцы) - Без анимации
+   7. ГРАФИКИ (Пончик и Столбцы)
    ========================================================================== */
 .chart-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
 .donut {
@@ -457,7 +468,6 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
   justify-content: center;
   align-items: center;
   margin-bottom: 24px;
-  /* Убрана анимация background */
 }
 .donut::after {
   content: '';
@@ -496,14 +506,13 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 .bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 8px; height: 100%; justify-content: flex-end; }
 .bar {
   width: 32px;
-  background: var(--acc);
+  background: var(--fg); /* Столбцы теперь цвета текста (черные/белые) */
   border-radius: 8px 8px 0 0;
-  /* Убрана анимация growBar */
 }
 .bar-wrap span { font-size: 12px; color: var(--mut); font-weight: 600; }
 
 /* ==========================================================================
-   8. НАСТРОЙКИ И МОДАЛЬНЫЕ ОКНА (Шторки)
+   8. НАСТРОЙКИ И МОДАЛЬНЫЕ ОКНА
    ========================================================================== */
 .sl { color: var(--mut); font-size: 13px; margin: 24px 0 8px 4px; font-weight: 500; text-transform: uppercase; }
 .seg {
@@ -528,7 +537,7 @@ body.mo #dr { transform: none; visibility: visible; transition-delay: 0s; }
 }
 .rs { margin-top: 32px; padding: 16px; color: var(--red); font-weight: 600; text-align: center; border-radius: 16px; background: var(--card-bg); }
 .dl { color: var(--red); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
-.cl { color: var(--acc); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
+.cl { color: var(--fg); padding: 16px; text-align: center; font-weight: 600; font-size: 16px; }
 
 /* Шторка */
 #ov {
@@ -571,18 +580,18 @@ input[type="text"], input[type="number"], input[type="time"], textarea {
   outline: none;
   transition: border-color 0.2s;
 }
-input:focus, textarea:focus { border-color: var(--acc); }
+input:focus, textarea:focus { border-color: var(--fg); }
 textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17px; resize: none; padding: 0; }
 
 .pr {
-  background: var(--acc);
-  color: #fff;
+  background: var(--fg);
+  color: var(--bg);
   border-radius: 16px;
   padding: 16px;
   font-weight: 600;
   font-size: 17px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 .row2 { display: flex; gap: 10px; }
 .row2 .pr { flex: 1; }
@@ -634,12 +643,12 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  background: var(--acc);
-  color: #fff;
+  background: var(--fg);
+  color: var(--bg);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   z-index: 90;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -663,7 +672,7 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
   transition: background 0.1s;
 }
 .numpad button:active { background: var(--sf); }
-.numpad .num-fn { color: var(--acc); font-size: 20px; }
+.numpad .num-fn { color: var(--fg); font-size: 20px; }
 </style>
 </head>
 <body>
@@ -696,14 +705,14 @@ textarea { flex: 1; min-height: 30vh; border: 0; background: none; font-size: 17
 
 <script>
 /* ==========================================================================
-   1. ИНИЦИАЛИЗАЦИЯ И БАЗА ДАННЫХ
+   1. ИНИЦИАЛИЗАЦИЯ
    ========================================================================== */
 const $ = s => document.querySelector(s);
 
 let S = {
   ev: [], done: {}, notes: [], gym: {}, moods: {}, fin: [],
   cats: [
-    { id: 'c1', name: 'Еда', color: '#ff9f0a' },      // Пастельные цвета iOS
+    { id: 'c1', name: 'Еда', color: '#ff9f0a' },      
     { id: 'c2', name: 'Транспорт', color: '#0a84ff' },
     { id: 'c3', name: 'Учеба', color: '#30d158' }
   ]
@@ -711,13 +720,10 @@ let S = {
 
 try { Object.assign(S, JSON.parse(localStorage.getItem('dni') || '{}')); } catch (e) {}
 
-S.set = Object.assign({ theme: 'auto', wk: 'mon', dots: '1', glass: '1' }, S.set);
+S.set = Object.assign({ theme: 'auto', wk: 'mon', dots: '1', glass: '1', font: 'sf' }, S.set);
 
 const save = () => { try { localStorage.setItem('dni', JSON.stringify(S)); } catch (e) {} };
 
-/* ==========================================================================
-   2. УТИЛИТЫ ДАТ И ТЕКСТА
-   ========================================================================== */
 const p = n => String(n).padStart(2, '0');
 const key = d => d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -738,8 +744,17 @@ let fy = cy, fm = cm;
 const wd = k => (new Date(k + 'T00:00').getDay() + 6) % 7;
 
 /* ==========================================================================
-   3. ЛОГИКА СОБЫТИЙ
+   2. ЛОГИКА И РЕНДЕРИНГ
    ========================================================================== */
+function applySet() {
+  const r = document.documentElement;
+  if (S.set.theme === 'auto') r.removeAttribute('data-theme');
+  else r.dataset.theme = S.set.theme;
+  
+  if (S.set.font) r.dataset.font = S.set.font;
+  else r.dataset.font = 'sf';
+}
+
 function occurs(e, k) {
   if (e.rep === 'once') return e.date === k;
   if (k < e.start) return false;
@@ -752,21 +767,8 @@ function repLabel(e) {
   const a = [];
   if (e.time) a.push(e.time);
   if (e.rep === 'daily') a.push('каждый день');
-  if (e.rep === 'days') {
-    a.push(e.days.length === 1 
-      ? 'каждый ' + ['понедельник', 'вторник', 'среду', 'четверг', 'пятницу', 'субботу', 'воскресенье'][e.days[0]]
-      : 'по дням: ' + [...e.days].sort().map(i => DOW[i].toLowerCase()).join(', '));
-  }
+  if (e.rep === 'days') a.push('по дням');
   return a.join(', ');
-}
-
-/* ==========================================================================
-   4. РЕНДЕРИНГ ЭКРАНОВ
-   ========================================================================== */
-function applySet() {
-  const r = document.documentElement;
-  if (S.set.theme === 'auto') r.removeAttribute('data-theme');
-  else r.dataset.theme = S.set.theme;
 }
 
 function head(y, m) {
@@ -826,15 +828,13 @@ function dayList() {
   
   h += '<button class="add" data-add>+ Добавить в расписание</button>';
   
-  // Настроение (Мини-виджет)
   const currentMood = S.moods[sel];
   h += '<div class="mood-compact"><span>Настроение</span><div class="moods">';
   for (let i = 0; i < 5; i++) {
-    h += `<button class="mood-btn ${currentMood === i ? 'active' : ''}" data-mood="${i}" title="${MOODS[i]}">${MOODS[i]}</button>`;
+    h += `<button class="mood-btn ${currentMood === i ? 'active' : ''}" data-mood="${i}">${MOODS[i]}</button>`;
   }
   h += '</div></div>';
 
-  // Расходы (Мини-виджет)
   const dayFin = finOn(sel);
   if (dayFin.length) {
     const sum = dayFin.reduce((a, b) => a + b.amount, 0);
@@ -873,7 +873,7 @@ function vGym() {
   return head(gy, gm) + 
     '<div class="st"><div><b>' + w + '</b><span>был</span></div><div><b>' + s + '</b><span>пропуск</span></div><div><b>' + pc + '</b><span>%</span></div></div>' + 
     g + 
-    '<p class="em" style="text-align:center;margin-top:20px;margin-bottom:20px">Нажми на день: был, затем пропуск, затем пусто.</p>' +
+    '<p class="em" style="text-align:center;margin-top:20px;margin-bottom:20px">Нажми на день: был, затем пропуск.</p>' +
     '<button class="gym-stat-btn" data-gymstat>Посмотреть статистику</button>';
 }
 
@@ -911,9 +911,7 @@ function vFin() {
   
   h += '<button class="fin-stat-btn" data-finstat>Посмотреть статистику</button>';
   
-  // Плавающая кнопка +
   h += `<button class="fab" data-addfin><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>`;
-  
   return h;
 }
 
@@ -923,8 +921,9 @@ function vSet() {
 
 function vLook() {
   const o = (k, v, t) => '<button data-set="' + k + '" data-v="' + v + '" class="' + (S.set[k] === v ? 'on' : '') + '">' + t + '</button>';
-  return '<button class="bk" data-t="set" style="color:var(--acc);font-weight:600;padding:10px 0">‹ Настройки</button>' +
+  return '<button class="bk" data-t="set" style="color:var(--fg);font-weight:600;padding:10px 0">‹ Настройки</button>' +
     '<div class="sl">Тема</div><div class="seg">' + o('theme', 'auto', 'Системная') + o('theme', 'light', 'Светлая') + o('theme', 'dark', 'Тёмная') + '</div>' +
+    '<div class="sl">Шрифт</div><div class="seg">' + o('font', 'sf', 'SF Pro') + o('font', 'inter', 'Inter') + o('font', 'manrope', 'Manrope') + '</div>' +
     '<div class="sl">Неделя начинается с</div><div class="seg">' + o('wk', 'mon', 'Пн') + o('wk', 'sun', 'Вс') + '</div>';
 }
 
@@ -945,7 +944,7 @@ function render() {
 }
 
 /* ==========================================================================
-   5. МОДАЛЬНЫЕ ОКНА
+   3. МОДАЛЬНЫЕ ОКНА И ДЕЙСТВИЯ
    ========================================================================== */
 function sh(h, full) {
   $('#sh').innerHTML = h;
@@ -960,9 +959,6 @@ function cl() {
   render();
 }
 
-/* ==========================================================================
-   6. ДОБАВЛЕНИЕ И РЕДАКТИРОВАНИЕ
-   ========================================================================== */
 function openEv(id) {
   const e = id ? S.ev.find(x => x.id === id) : null;
   let rep = e ? e.rep : 'once';
@@ -982,8 +978,8 @@ function openEv(id) {
     $('#dy').style.display = rep === 'days' ? 'flex' : 'none';
     $('#dy').innerHTML = DOW.map((d, i) => '<button data-d="' + i + '" style="flex:1;height:40px;border-radius:10px;background:var(--card-bg);font-size:14px" class="' + (days.includes(i) ? 'on' : '') + '">' + d + '</button>').join('');
     document.querySelectorAll('#dy button.on').forEach(b => {
-      b.style.background = 'var(--acc)';
-      b.style.color = '#fff';
+      b.style.background = 'var(--fg)';
+      b.style.color = 'var(--bg)';
     });
   };
   paint();
@@ -1015,9 +1011,8 @@ function openNote(id) {
 }
 
 function openAddFin() {
-  // Генерация кнопок категорий
   let catHtml = S.cats.map(c => `<button class="cat-btn" data-cat="${c.id}" style="background:${c.color}15;color:${c.color};border:1px solid ${c.color}30;padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600;margin:0 8px 8px 0">${esc(c.name)}</button>`).join('');
-  catHtml += `<button id="manage-cats" style="background:var(--card-bg);color:var(--acc);border:1px dashed var(--line);padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600">Управление</button>`;
+  catHtml += `<button id="manage-cats" style="background:var(--card-bg);color:var(--fg);border:1px dashed var(--line);padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600">Управление</button>`;
   
   sh(`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <h3 style="margin:0;font-size:20px;font-weight:700">Новый расход</h3>
@@ -1029,7 +1024,6 @@ function openAddFin() {
       <div class="sl" style="margin:10px 0 6px">Категория</div>
       <div id="cat-list" style="display:flex;flex-wrap:wrap;margin-bottom:16px">${catHtml}</div>
       
-      <!-- Встроенная цифровая клавиатура (Numpad) -->
       <div class="numpad" id="numpad">
         <button data-num="1">1</button><button data-num="2">2</button><button data-num="3">3</button>
         <button data-num="4">4</button><button data-num="5">5</button><button data-num="6">6</button>
@@ -1045,38 +1039,31 @@ function openAddFin() {
   const display = $('#fin-display');
   const inputSum = $('#fin-sum');
   
-  // Установка первой категории
   const firstBtn = document.querySelector('#cat-list [data-cat]');
-  if (firstBtn) firstBtn.style.boxShadow = '0 0 0 2px var(--acc)';
+  if (firstBtn) firstBtn.style.boxShadow = '0 0 0 2px var(--fg)';
   
-  // Логика цифровой клавиатуры
   $('#numpad').onclick = (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    
-    if (btn.dataset.fn === 'del') {
-      currentSum = currentSum.slice(0, -1);
-    } else if (btn.dataset.num) {
+    if (btn.dataset.fn === 'del') currentSum = currentSum.slice(0, -1);
+    else if (btn.dataset.num) {
       if (btn.dataset.num === '.' && currentSum.includes('.')) return;
       if (currentSum.length < 9) currentSum += btn.dataset.num;
     }
-    
     inputSum.value = currentSum;
     display.textContent = currentSum ? currentSum + ' ₽' : '0 ₽';
   };
   
-  // Управление категориями
   $('#cat-list').onclick = (e) => {
     const btn = e.target.closest('[data-cat]');
     if (btn) {
       selectedCat = btn.dataset.cat;
       document.querySelectorAll('#cat-list button').forEach(b => b.style.boxShadow = 'none');
-      btn.style.boxShadow = '0 0 0 2px var(--acc)';
+      btn.style.boxShadow = '0 0 0 2px var(--fg)';
       return;
     }
     
     if (e.target.id === 'manage-cats') {
-      // Окно управления категориями
       let manageHtml = S.cats.map(c => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--card-bg);border-radius:12px;margin-bottom:8px">
           <div style="display:flex;align-items:center;gap:10px">
@@ -1099,27 +1086,23 @@ function openAddFin() {
           const color = colors[S.cats.length % colors.length];
           S.cats.push({ id: 'c' + Date.now(), name, color });
           save();
-          openAddFin(); // Возврат к расходам
+          openAddFin();
         }
       };
-      
       $('#back-to-fin').onclick = () => openAddFin();
       
-      // Удаление категории
       document.querySelectorAll('[data-del-cat]').forEach(b => {
         b.onclick = () => {
           const catId = b.dataset.delCat;
-          // Переносим траты в "Другое" (или создаем его)
           let otherCat = S.cats.find(c => c.name === 'Другое');
           if (!otherCat) {
             otherCat = { id: 'c_other', name: 'Другое', color: '#8e8e93' };
             S.cats.push(otherCat);
           }
           S.fin.forEach(f => { if (f.catId === catId) f.catId = otherCat.id; });
-          
           S.cats = S.cats.filter(c => c.id !== catId);
           save();
-          openAddFin(); // Обновляем
+          openAddFin();
         };
       });
       return;
@@ -1136,15 +1119,12 @@ function openAddFin() {
   };
 }
 
-/* ==========================================================================
-   7. СТАТИСТИКА И ГРАФИКИ
-   ========================================================================== */
 function openStatModal(title, dataObj, total, type) {
   let legendHtml = '', barsHtml = '', donutSegments = [], curAngle = 0;
   
   if (type === 'gym') {
     const pc = total ? Math.round(dataObj.w * 100 / total) : 0;
-    donutSegments.push(`var(--acc) 0deg ${pc * 3.6}deg`);
+    donutSegments.push(`var(--fg) 0deg ${pc * 3.6}deg`);
     donutSegments.push(`var(--sf) ${pc * 3.6}deg 360deg`);
     
     for (let i = 3; i >= 0; i--) {
@@ -1175,7 +1155,7 @@ function openStatModal(title, dataObj, total, type) {
   }
 
   const bgGradient = `conic-gradient(${donutSegments.join(',')})`;
-  const donutHtml = `<div class="donut" id="modal-donut" style="background:${bgGradient}"><div class="donut-inner"><b>${type === 'gym' ? Math.round(dataObj.w * 100 / total) + '%' : total + ' ₽'}</b><span>${type === 'gym' ? 'посещено' : 'потрачено'}</span></div></div>`;
+  const donutHtml = `<div class="donut" style="background:${bgGradient}"><div class="donut-inner"><b>${type === 'gym' ? Math.round(dataObj.w * 100 / total) + '%' : total + ' ₽'}</b><span>${type === 'gym' ? 'посещено' : 'потрачено'}</span></div></div>`;
   const barsWrap = `<div class="bar-chart">${barsHtml}</div>`;
 
   sh(`<h3 style="margin:0 0 16px 0;font-size:20px;font-weight:700;text-align:center">${title}</h3>
@@ -1225,9 +1205,6 @@ function mv(n) {
   else if (tab === 'fin') { const d = new Date(fy, fm + n, 1); fy = d.getFullYear(); fm = d.getMonth(); }
 }
 
-/* ==========================================================================
-   8. ОБРАБОТКА КЛИКОВ (Свайпы и действия)
-   ========================================================================== */
 document.addEventListener('click', ev => {
   if (ev.target.id === 'ov') { cl(); return; }
   if (ev.target.id === 'sc') { menu(false); return; }
@@ -1307,21 +1284,13 @@ document.addEventListener('click', ev => {
   }
 });
 
-/* ==========================================================================
-   9. СВАЙПЫ (Touch events)
-   ========================================================================== */
 let startX = 0, startY = 0, currentSwipeEl = null;
 
 document.addEventListener('touchstart', e => {
   if ($('#ov').classList.contains('o')) return;
   const row = e.target.closest('.r, .fin-item, .nt');
   if (!row) return;
-  
-  // Закрываем предыдущий открытый свайп
-  if (currentSwipeEl && currentSwipeEl !== row) {
-    currentSwipeEl.classList.remove('swiped');
-  }
-  
+  if (currentSwipeEl && currentSwipeEl !== row) currentSwipeEl.classList.remove('swiped');
   startX = e.touches[0].clientX;
   startY = e.touches[0].clientY;
   currentSwipeEl = row;
@@ -1331,10 +1300,8 @@ document.addEventListener('touchmove', e => {
   if (!currentSwipeEl) return;
   const dx = e.touches[0].clientX - startX;
   const dy = e.touches[0].clientY - startY;
-  
-  // Если свайп больше горизонтальный, чем вертикальный
   if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
-    if (e.cancelable) e.preventDefault(); // Блокируем скролл
+    if (e.cancelable) e.preventDefault();
     const inner = currentSwipeEl.querySelector('.r-inner');
     if (inner) {
       const move = Math.max(-80, Math.min(0, dx));
@@ -1347,31 +1314,23 @@ document.addEventListener('touchend', e => {
   if (!currentSwipeEl) return;
   const dx = e.changedTouches[0].clientX - startX;
   const dy = e.changedTouches[0].clientY - startY;
-  
   const inner = currentSwipeEl.querySelector('.r-inner');
   
   if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
     if (dx < 0) {
-      // Свайп влево (удаление)
       currentSwipeEl.classList.add('swiped');
       if (inner) inner.style.transform = ''; 
     } else {
-      // Свайп вправо (закрытие)
       currentSwipeEl.classList.remove('swiped');
       if (inner) inner.style.transform = '';
     }
   } else {
-    // Не дотянули
     if (inner) inner.style.transform = '';
-    if (!currentSwipeEl.classList.contains('swiped')) {
-      currentSwipeEl = null;
-    }
+    if (!currentSwipeEl.classList.contains('swiped')) currentSwipeEl = null;
   }
-  
   setTimeout(() => { if (currentSwipeEl && currentSwipeEl.classList.contains('swiped')) currentSwipeEl = null; }, 300);
 }, { passive: true });
 
-// Обработка кнопок удаления после свайпа
 document.addEventListener('click', e => {
   const delEv = e.target.closest('[data-del-ev]');
   if (delEv) { S.ev = S.ev.filter(x => x.id !== delEv.dataset.delEv); save(); render(); return; }
@@ -1383,9 +1342,6 @@ document.addEventListener('click', e => {
   if (delFin) { S.fin = S.fin.filter(x => x.id !== delFin.dataset.delFin); save(); render(); return; }
 });
 
-/* ==========================================================================
-   10. УТИЛИТЫ И ЗАПУСК
-   ========================================================================== */
 function menu(o) { document.body.classList.toggle('mo', o === undefined ? !document.body.classList.contains('mo') : o); }
 
 applySet();
