@@ -1032,7 +1032,7 @@ document.addEventListener('click', ev => {
   if (D.gymstat !== undefined) { openGymStat(); return; }
   if (D.wkstat !== undefined) { openWkStat(); return; }
   if (D.openMood !== undefined) { openMood(); return; }
-  if (D.share) { if (D.share === 'day') shareDay(); else if (D.share === 'week') shareWeek(); else if (D.share === 'month') sharePeriod(fy, fm); else if (D.share === 'year') sharePeriod(+D.y, undefined); return; }
+  if (D.share) { if (D.share === 'day' || D.share === 'week') openShare(); else if (D.share === 'month') sharePeriod(fy, fm); else if (D.share === 'year') sharePeriod(+D.y, undefined); return; }
   if (D.rebalance !== undefined) { openRebalance(); return; }
   if (D.moveto) { const [id, k2] = D.moveto.split('|'); const e = S.ev.find(x => x.id === id); if (e) { e.date = k2; e.start = k2; e.rep = 'once'; e.days = []; save(); render(); showToast('✅', 'Перенесено на ' + fdate(k2)); } return; }
   if (D.delEv || D.delFin) {
@@ -1105,34 +1105,64 @@ function cardBg(x, w, h, title) {
   x.fillStyle = 'rgba(255,255,255,.5)'; x.font = '500 13px -apple-system, sans-serif';
   x.fillText('Дни · ' + fdate(key(new Date())), 30, 74);
 }
-function shareDay() {
-  const L = evOn(sel), [c, x] = cardX(720, 340 + Math.max(1, L.length) * 44);
-  cardBg(x, 720, 340 + Math.max(1, L.length) * 44, DOWF[wd(sel)] + ', ' + fdate(sel));
-  x.font = '500 19px -apple-system, sans-serif';
-  if (!L.length) { x.fillStyle = 'rgba(255,255,255,.6)'; x.fillText('Ничего не запланировано', 30, 130); }
-  L.forEach((e, i) => {
-    const y = 120 + i * 44;
-    x.fillStyle = 'rgba(255,255,255,.14)'; rr(x, 24, y - 24, 672, 36, 10); x.fill();
-    x.fillStyle = e.important ? '#ff8c85' : '#ffd166';
-    x.fillText((e.time || '—') + (e.end ? '–' + e.end : ''), 40, y);
-    x.fillStyle = '#fff'; x.fillText(e.title.slice(0, 32), 175, y);
+function shareDays(ks) {
+  const days = ks.map(k => ({ k, L: evOn(k) }));
+  let rows = 0; days.forEach(d => rows += Math.min(d.L.length, 8) + (d.L.length > 8 ? 1 : 0));
+  const multi = ks.length > 1;
+  const H = 110 + (multi ? days.length * 34 : 0) + rows * 42 + 50;
+  const [c, x] = cardX(720, H);
+  const t0 = new Date(ks[0] + 'T00:00'), t1 = new Date(ks[ks.length - 1] + 'T00:00');
+  cardBg(x, 720, H, multi ? (ks.length === 7 ? 'План недели' : 'План: ' + ks.length + ' дн.') : DOWF[wd(ks[0])] + ', ' + fdate(ks[0]));
+  let y = 120;
+  if (multi) {
+    x.fillStyle = 'rgba(255,255,255,.55)'; x.font = '500 15px -apple-system, sans-serif';
+    x.fillText(t0.getDate() + ' ' + MG[t0.getMonth()] + ' — ' + t1.getDate() + ' ' + MG[t1.getMonth()], 30, y);
+    y += 34;
+  }
+  days.forEach(d => {
+    if (multi) {
+      x.fillStyle = 'rgba(255,255,255,.75)'; x.font = '700 17px -apple-system, sans-serif';
+      x.fillText(DOW[wd(d.k)] + ', ' + fdate(d.k), 30, y); y += 30;
+    }
+    if (!d.L.length) {
+      x.fillStyle = 'rgba(255,255,255,.45)'; x.font = '500 15px -apple-system, sans-serif';
+      x.fillText('— ничего не запланировано', 40, y); y += 38; return;
+    }
+    x.font = '500 18px -apple-system, sans-serif';
+    d.L.slice(0, 8).forEach(e => {
+      x.fillStyle = 'rgba(255,255,255,.13)'; rr(x, 24, y - 22, 672, 34, 9); x.fill();
+      x.fillStyle = e.important ? '#ff8c85' : '#ffd166';
+      x.fillText((e.time || '—') + (e.end ? '–' + e.end : ''), 40, y);
+      x.fillStyle = '#fff'; x.fillText(e.title.slice(0, 34), multi ? 190 : 175, y);
+      y += 42;
+    });
+    if (d.L.length > 8) { x.fillStyle = 'rgba(255,255,255,.5)'; x.font = '500 14px -apple-system, sans-serif'; x.fillText('… ещё ' + (d.L.length - 8), 40, y); y += 32; }
+    y += 8;
   });
-  shareCanvas(c, 'den-' + sel + '.png');
+  shareCanvas(c, 'plan-' + ks[0] + (ks.length > 1 ? '-' + ks[ks.length - 1] : '') + '.png');
 }
-function shareWeek() {
-  const t = new Date(), mon = new Date(t.getFullYear(), t.getMonth(), t.getDate() - wd(key(t)));
-  const rows = [0, 1, 2, 3, 4, 5, 6].map(i => { const d = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i); return { k: key(d), n: evOn(key(d)).length }; });
-  const mx = Math.max(...rows.map(r => r.n), 1);
-  const [c, x] = cardX(720, 420);
-  cardBg(x, 720, 420, 'План недели');
-  rows.forEach((r, i) => {
-    const y = 120 + i * 38, bw = r.n / mx * 380;
-    x.fillStyle = 'rgba(255,255,255,.75)'; x.font = '600 16px -apple-system, sans-serif'; x.fillText(DOW[i] + ' ' + fdate(r.k), 30, y);
-    x.fillStyle = 'rgba(255,255,255,.14)'; rr(x, 230, y - 14, 400, 18, 9); x.fill();
-    x.fillStyle = '#7dc4ff'; if (bw) { rr(x, 230, y - 14, Math.max(18, bw), 18, 9); x.fill(); }
-    x.fillStyle = '#fff'; x.fillText(String(r.n), 645, y);
-  });
-  shareCanvas(c, 'nedelya.png');
+function openShare() {
+  const t = new Date(), tk = key(t), mon = new Date(t.getFullYear(), t.getMonth(), t.getDate() - wd(tk));
+  const ks = [0, 1, 2, 3, 4, 5, 6].map(i => key(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i)));
+  let mode = 'today'; const chosen = new Set([tk]);
+  sh('<h3 class="h3">Поделиться планом</h3><div class="seg" id="shm"><button data-m="today" class="on">Сегодня</button><button data-m="days">Выбрать дни</button><button data-m="week">Вся неделя</button></div>' +
+    '<div class="dys" id="shd" style="display:none;flex-wrap:wrap">' + DOW.map((d, i) => '<button data-sd="' + ks[i] + '" class="' + (chosen.has(ks[i]) ? 'on' : '') + '">' + d + '</button>').join('') + '</div>' +
+    '<p class="em" id="shp" style="margin:0;text-align:left"></p><button class="pr" id="shgo">Сохранить картинку</button><button class="cl" id="x">Отмена</button>');
+  const prev = () => {
+    const list = mode === 'today' ? [tk] : mode === 'week' ? ks : ks.filter(k => chosen.has(k));
+    $('#shp').textContent = !list.length ? 'Выберите хотя бы один день' :
+      list.length === 1 ? 'На картинке: ' + DOWF[wd(list[0])].toLowerCase() + ', ' + fdate(list[0]) :
+      list.length === 7 ? 'На картинке: вся неделя (' + fdate(ks[0]) + ' – ' + fdate(ks[6]) + ')' :
+      'На картинке: ' + list.length + ' дн. — ' + list.map(k => DOW[wd(k)]).join(', ');
+    $('#shd').style.display = mode === 'days' ? 'flex' : 'none';
+    $('#shm').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
+    return list;
+  };
+  let list = prev();
+  $('#shm').onclick = e => { const b = e.target.closest('[data-m]'); if (!b) return; mode = b.dataset.m; list = prev(); };
+  $('#shd').onclick = e => { const b = e.target.closest('[data-sd]'); if (!b) return; const k = b.dataset.sd; chosen.has(k) ? chosen.delete(k) : chosen.add(k); b.classList.toggle('on'); list = prev(); };
+  $('#x').onclick = cl;
+  $('#shgo').onclick = () => { if (!list.length) { showToast('📅', 'Выберите хотя бы один день'); return; } cl(); setTimeout(() => shareDays(list), 300); };
 }
 function sharePeriod(y, m) {
   let mf;
@@ -1347,7 +1377,7 @@ function vDay() {
   if (isToday && nowM >= rs && nowM <= re) { fy2 = (nowM - rs) / 60 * HH; h += '<div class="tl-now" style="top:' + fy2 + 'px"></div>'; }
   h += '<div id="tl-focus" style="position:absolute;left:0;top:' + Math.max(0, fy2) + 'px;height:1px"></div></div></div>';
   if (!L.length) h += '<p class="em">На этот день ничего нет.</p>';
-  h += '<button class="stat-btn" data-share="day">Поделиться днём — картинкой</button>';
+  h += '<button class="stat-btn" data-share="day">Поделиться — картинкой</button>';
   return h;
 }
 function dayFocus() {
@@ -1387,7 +1417,7 @@ function weekReviewCard(tk) {
   else if (tot && Math.max(...cnt) - Math.min(...cnt) >= 3) tip = 'нагрузка неравномерная, попробуйте распределить задачи ровнее по дням.';
   else tip = 'неделя прошла ровно, держите темп.';
   L.push('<b>Совет на следующую неделю:</b> ' + tip);
-  const extra = '<div class="trow" style="margin-top:12px"><button class="pr" style="margin:0" data-share="week">Поделиться итогами</button><button class="pr alt" style="margin:0" data-rebalance>Распределить день</button></div>';
+  const extra = '<div class="trow" style="margin-top:12px"><button class="pr" style="margin:0" data-share="week">Поделиться — картинкой</button><button class="pr alt" style="margin:0" data-rebalance>Распределить день</button></div>';
   return hcard((isSun ? 'Итоги недели' : 'Итоги прошлой недели') + '<div style="font-size:13px;font-weight:400;color:var(--mut);margin-top:2px;font-family:var(--font-main)">' + lab + '</div>', L, extra);
 }
 
